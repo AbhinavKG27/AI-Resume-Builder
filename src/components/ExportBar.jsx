@@ -1,44 +1,93 @@
-// 📁 Location: src/components/ExportBar.jsx  ← FIXED
-// Fix 1: Download PDF now triggers window.print() for real browser PDF save
-// Fix 2: Print uses dedicated print-only class approach
-
 import { useState } from "react";
 import { generatePlainText, validateForExport } from "../utils/exportText";
 import "./ExportBar.css";
 
-export default function ExportBar({ resume }) {
-  const [copyState,   setCopyState]   = useState("idle");
-  const [showWarning, setShowWarning] = useState(false);
-  const [warnings,    setWarnings]    = useState([]);
-  const [toast,       setToast]       = useState(false);
+const HTML2PDF_CDN = "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js";
 
-  // ── Shared print trigger ──────────────────────────────────────────────────
-  const triggerPrint = (validateFirst = true) => {
+function waitForNextFrame() {
+  return new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+}
+
+function loadHtml2Pdf() {
+  if (window.html2pdf) return Promise.resolve(window.html2pdf);
+
+  return new Promise((resolve, reject) => {
+    const existing = document.querySelector('script[data-lib="html2pdf"]');
+    if (existing) {
+      existing.addEventListener("load", () => resolve(window.html2pdf));
+      existing.addEventListener("error", () => reject(new Error("Failed to load html2pdf")));
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = HTML2PDF_CDN;
+    script.async = true;
+    script.dataset.lib = "html2pdf";
+    script.onload = () => resolve(window.html2pdf);
+    script.onerror = () => reject(new Error("Failed to load html2pdf"));
+    document.head.appendChild(script);
+  });
+}
+
+export default function ExportBar({ resume, previewRef }) {
+  const [copyState, setCopyState] = useState("idle");
+  const [showWarning, setShowWarning] = useState(false);
+  const [warnings, setWarnings] = useState([]);
+  const [toast, setToast] = useState("");
+
+  const triggerPrint = async (validateFirst = true) => {
+    const target = previewRef?.current;
+    if (!target) {
+      setToast("Resume preview is still loading. Please try again.");
+      setTimeout(() => setToast(""), 2800);
+      return;
+    }
+
     if (validateFirst) {
       const w = validateForExport(resume);
-      if (w.length > 0) {
-        setWarnings(w);
-        setShowWarning(true);
-        setTimeout(() => window.print(), 400);
-        return;
-      }
+      setWarnings(w);
+      setShowWarning(w.length > 0);
     }
-    setShowWarning(false);
+
+    await waitForNextFrame();
     window.print();
   };
 
-  // ── Download PDF — triggers real browser print dialog ────────────────────
-  const handleDownloadPDF = () => {
-    // Show toast first, then open print dialog (user saves as PDF)
-    setToast(true);
-    setTimeout(() => setToast(false), 3000);
-    setTimeout(() => triggerPrint(false), 300);
+  const handleDownloadPDF = async () => {
+    const target = previewRef?.current;
+    if (!target) {
+      setToast("Resume preview is still loading. Please try again.");
+      setTimeout(() => setToast(""), 2800);
+      return;
+    }
+
+    try {
+      setToast("Generating PDF...");
+      const html2pdf = await loadHtml2Pdf();
+      const filename = `${(resume.personal?.name || "resume").trim().replace(/\s+/g, "-").toLowerCase() || "resume"}.pdf`;
+
+      await waitForNextFrame();
+
+      await html2pdf()
+        .set({
+          margin: [10, 8, 10, 8],
+          filename,
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
+          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+          pagebreak: { mode: ["css", "legacy"] },
+        })
+        .from(target)
+        .save();
+
+      setToast("PDF downloaded successfully.");
+    } catch {
+      setToast("PDF export failed. Please try Print as fallback.");
+    } finally {
+      setTimeout(() => setToast(""), 2800);
+    }
   };
 
-  // ── Print ─────────────────────────────────────────────────────────────────
-  const handlePrint = () => triggerPrint(true);
-
-  // ── Copy plain text ───────────────────────────────────────────────────────
   const handleCopy = async () => {
     const w = validateForExport(resume);
     setWarnings(w);
@@ -55,16 +104,13 @@ export default function ExportBar({ resume }) {
 
   return (
     <div className="export-bar">
-
-      {/* Toast */}
       {toast && (
         <div className="export-toast">
           <span className="export-toast-icon">✓</span>
-          Opening print dialog — choose "Save as PDF"
+          {toast}
         </div>
       )}
 
-      {/* Warning banner */}
       {showWarning && warnings.length > 0 && (
         <div className="export-warning">
           <div className="export-warning-inner">
@@ -80,33 +126,29 @@ export default function ExportBar({ resume }) {
         </div>
       )}
 
-      {/* Action row */}
       <div className="export-actions">
         <div className="export-actions-left">
           <span className="export-label">Export</span>
         </div>
         <div className="export-actions-right">
-
           <button
             className={`btn btn-ghost export-btn ${copyState === "copied" ? "copied" : ""} ${copyState === "error" ? "error" : ""}`}
             onClick={handleCopy}
           >
             {copyState === "copied" ? <><CheckIcon /> Copied!</>
-             : copyState === "error" ? <><AlertIcon /> Copy failed</>
-             : <><CopyIcon /> Copy as Text</>}
+              : copyState === "error" ? <><AlertIcon /> Copy failed</>
+                : <><CopyIcon /> Copy as Text</>}
           </button>
 
-          <button className="btn btn-ghost export-btn" onClick={handlePrint}>
+          <button className="btn btn-ghost export-btn" onClick={() => triggerPrint(true)}>
             <PrintIcon /> Print
           </button>
 
           <button className="btn btn-primary export-btn" onClick={handleDownloadPDF}>
             <DownloadIcon /> Download PDF
           </button>
-
         </div>
       </div>
-
     </div>
   );
 }

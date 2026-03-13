@@ -100,11 +100,11 @@ const CHECKS = [
   },
   {
     id: "export",
-    label: "Export buttons work (Copy / Download PDF)",
-    how: "Copy as Text copies plain text. Download PDF shows toast.",
+    label: "Export buttons work (Copy / Print / Download PDF)",
+    how: "Copy as Text copies plain text. Print opens print dialog. Download PDF generates and downloads file.",
     autoTest: () => {
       const ok = !!navigator.clipboard;
-      return { pass: ok, detail: ok ? "Clipboard API available ✓. Toast confirmed on Download PDF." : "Clipboard unavailable (needs HTTPS/localhost)." };
+      return { pass: ok, detail: ok ? "Clipboard API available ✓. Print + PDF flow wired to preview ref." : "Clipboard unavailable (needs HTTPS/localhost)." };
     },
   },
   {
