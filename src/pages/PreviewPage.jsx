@@ -1,33 +1,33 @@
-// 📁 Location: src/pages/PreviewPage.jsx  ← MODIFIED (replace entire file)
-// Changes:
-//   - ExportBar added (Print/PDF + Copy as Text + validation warning)
-//   - .print-root class added to resume wrapper so print CSS can isolate it
-//   - export-badge placeholder replaced by real ExportBar
+// 📁 Location: src/pages/PreviewPage.jsx  ← MODIFIED
 
-import ResumePreview from "../components/ResumePreview";
-import TemplatePicker from "../components/TemplatePicker";
-import ExportBar from "../components/ExportBar";
+import ResumePreview  from "../components/ResumePreview";
+import DesignControls from "../components/DesignControls";
+import ExportBar      from "../components/ExportBar";
 import "./PreviewPage.css";
 
-export default function PreviewPage({ resume, template, setTemplate, nav }) {
+export default function PreviewPage({ resume, template, setTemplate, themeId, setTheme, nav }) {
   return (
     <div className="preview-page">
 
-      {/* ── Toolbar: back + template picker ── */}
+      {/* Toolbar */}
       <div className="preview-toolbar">
         <button className="btn btn-ghost btn-sm" onClick={() => nav("/builder")}>
           ← Back to Builder
         </button>
-        <TemplatePicker template={template} setTemplate={setTemplate} />
-        {/* spacer */}
-        <div style={{ flex: 1 }} />
       </div>
 
-      {/* ── Export bar: print + copy as text ── */}
+      {/* Design controls: template thumbnails + color picker */}
+      <DesignControls
+        template={template}
+        setTemplate={setTemplate}
+        themeId={themeId}
+        setTheme={setTheme}
+      />
+
+      {/* Export bar */}
       <ExportBar resume={resume} />
 
-      {/* ── Resume document ── */}
-      {/* .print-root is the anchor used by @media print to isolate this element */}
+      {/* Resume paper */}
       <div className="preview-body">
         <div className="preview-paper print-root">
           <ResumePreview resume={resume} template={template} />

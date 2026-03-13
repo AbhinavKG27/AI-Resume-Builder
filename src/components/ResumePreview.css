@@ -1,5 +1,19 @@
-/* 📁 Location: src/components/ResumePreview.css  ← MODIFIED (replace entire file) */
+/* 📁 Location: src/components/ResumePreview.css  ← MODIFIED
+   --rv-accent is injected by useThemeState onto :root
+   All accent uses reference this variable.
+*/
 
+/* ── Fallback if theme not yet injected ── */
+:root {
+  --rv-accent:      hsl(168, 60%, 40%);
+  --rv-sidebar-bg:  hsl(168, 60%, 40%);
+  --rv-accent-tint: hsl(168, 60%, 92%);
+  --rv-accent-text: hsl(168, 60%, 18%);
+}
+
+/* ══════════════════════════════════════════════════════════
+   SHARED BASE — used by Classic + Minimal
+══════════════════════════════════════════════════════════ */
 .resume-doc {
   background: #fff;
   color: #111;
@@ -8,9 +22,9 @@
   font-size: 13px;
   line-height: 1.65;
   min-height: 900px;
-  border: 1px solid #e0dbd4;
-  border-radius: 4px;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 
 /* Header */
@@ -24,7 +38,8 @@
   color: #111;
   margin-bottom: 8px;
 }
-.rv-ghost { color: #ccc; font-style: italic; }
+.rv-ghost       { color: #ccc; font-style: italic; }
+.rv-ghost-light { color: rgba(255,255,255,0.4); font-style: italic; }
 
 .rv-contact {
   display: flex;
@@ -41,9 +56,10 @@
   margin: 0 6px;
 }
 
+/* Rule — uses accent */
 .rv-rule {
   border: none;
-  border-top: 2px solid #111;
+  border-top: 2px solid var(--rv-accent);
   margin: 12px 0 18px;
 }
 
@@ -55,11 +71,12 @@
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #111;
-  border-bottom: 1px solid #ddd;
+  color: var(--rv-accent);
+  border-bottom: 1px solid var(--rv-accent);
   padding-bottom: 4px;
   margin-bottom: 10px;
   font-family: 'DM Sans', sans-serif;
+  opacity: 0.85;
 }
 
 /* Entry */
@@ -73,18 +90,20 @@
   padding-bottom: 0;
   border-bottom: none;
 }
-
 .rv-entry-top {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 12px;
   margin-bottom: 4px;
+  min-width: 0;
 }
 .rv-entry-left {
   display: flex;
   flex-direction: column;
   gap: 1px;
+  min-width: 0;
+  overflow: hidden;
 }
 .rv-entry-right {
   display: flex;
@@ -93,46 +112,47 @@
   gap: 2px;
   flex-shrink: 0;
 }
-
 .rv-entry-title {
   font-size: 13px;
   font-weight: 600;
   color: #111;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
 }
-.rv-entry-company {
-  font-size: 12px;
-  color: #555;
-}
+.rv-entry-company { font-size: 12px; color: #555; }
 .rv-entry-date {
   font-size: 11px;
   color: #888;
   white-space: nowrap;
   font-family: 'DM Mono', monospace;
   flex-shrink: 0;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.rv-entry-grade {
-  font-size: 11px;
-  color: #888;
-  font-family: 'DM Mono', monospace;
-}
-.rv-entry-tech {
-  font-size: 11px;
-  color: #777;
-  font-family: 'DM Mono', monospace;
-}
-.rv-body {
-  font-size: 12.5px;
-  color: #333;
-  line-height: 1.7;
-}
-.rv-entry-body { margin-top: 3px; }
+.rv-entry-grade { font-size: 11px; color: #888; font-family: 'DM Mono', monospace; }
+.rv-entry-tech  { font-size: 11px; color: #777; font-family: 'DM Mono', monospace; }
+.rv-body        { font-size: 12.5px; color: #333; line-height: 1.7; }
+.rv-entry-body  { margin-top: 3px; }
 
-/* Skills */
-.rv-skills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
+/* Skills — grouped */
+.rv-skill-groups  { display: flex; flex-direction: column; gap: 8px; }
+.rv-skill-group   { display: flex; align-items: flex-start; gap: 10px; }
+.rv-skill-group-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #999;
+  font-family: 'DM Mono', monospace;
+  white-space: nowrap;
+  padding-top: 4px;
+  min-width: 68px;
+  flex-shrink: 0;
 }
+.rv-skills { display: flex; flex-wrap: wrap; gap: 5px; row-gap: 5px; }
 .rv-skill {
   font-size: 11.5px;
   padding: 3px 9px;
@@ -140,6 +160,43 @@
   border-radius: 3px;
   color: #333;
   font-family: 'DM Mono', monospace;
+}
+
+/* Project cards */
+.rv-project-card {
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0ece6;
+}
+.rv-project-card:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+.rv-project-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.rv-project-links { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+.rv-project-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: #666;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.rv-tech-pills { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 5px; }
+.rv-tech-pill {
+  font-size: 10px;
+  padding: 2px 7px;
+  border: 1px solid #e8e4df;
+  border-radius: 3px;
+  color: #444;
+  font-family: 'DM Mono', monospace;
+  background: #fafaf9;
 }
 
 /* Empty state */
@@ -157,246 +214,206 @@
 }
 .rv-empty strong { color: #999; }
 
-/* ══════════════════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════════
+   CLASSIC overrides
+══════════════════════════════════════════════════════════ */
+[data-template="classic"] .resume-doc { padding: 52px 56px; }
+[data-template="classic"] .rv-name    { font-family: 'Playfair Display', serif; font-size: 32px; }
+[data-template="classic"] .rv-rule    { border-top-width: 2px; margin: 14px 0 20px; }
+[data-template="classic"] .rv-section-title {
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  border-bottom: 1px solid var(--rv-accent);
+  padding-bottom: 4px;
+  margin-bottom: 12px;
+}
+
+/* ══════════════════════════════════════════════════════════
+   MINIMAL overrides
+══════════════════════════════════════════════════════════ */
+[data-template="minimal"] .resume-doc  { padding: 64px 64px; border: none; box-shadow: none; }
+[data-template="minimal"] .rv-name    {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+[data-template="minimal"] .rv-rule    { border-top: 1px solid #ddd; margin: 16px 0 24px; }
+[data-template="minimal"] .rv-contact { font-size: 11.5px; color: #777; }
+[data-template="minimal"] .rv-section-title {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: #999;
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 14px;
+  font-weight: 600;
+}
+[data-template="minimal"] .rv-entry        { border-bottom: none; }
+[data-template="minimal"] .rv-entry-title  { font-weight: 500; }
+[data-template="minimal"] .rv-entry-company { color: #888; }
+[data-template="minimal"] .rv-entry-date   { color: #aaa; }
+[data-template="minimal"] .rv-skill        { border: 1px solid #eee; background: transparent; color: #555; }
+[data-template="minimal"] .rv-body         { color: #444; }
+
+/* ══════════════════════════════════════════════════════════
+   MODERN — real two-column layout
+══════════════════════════════════════════════════════════ */
+.resume-doc.rv-modern {
+  display: flex;
+  flex-direction: row;
+  padding: 0;
+  min-height: 900px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+/* Sidebar */
+.rv-sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  background: var(--rv-sidebar-bg);
+  color: white;
+  padding: 36px 20px 36px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+.rv-sidebar-name {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+  line-height: 1.25;
+  margin-bottom: 20px;
+  letter-spacing: -0.02em;
+}
+
+.rv-sidebar-section { margin-bottom: 20px; }
+
+.rv-sidebar-heading {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.55);
+  font-family: 'DM Sans', sans-serif;
+  margin-bottom: 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  padding-bottom: 4px;
+}
+
+.rv-sidebar-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.rv-sidebar-contact-item {
+  font-size: 10.5px;
+  color: rgba(255,255,255,0.82);
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rv-sidebar-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.rv-sidebar-skill {
+  display: inline-block;
+  font-size: 10px;
+  padding: 2px 8px;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 20px;
+  color: rgba(255,255,255,0.88);
+  font-family: 'DM Sans', sans-serif;
+  white-space: nowrap;
+}
+
+/* Main content */
+.rv-main {
+  flex: 1;
+  padding: 36px 32px;
+  background: #fff;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.rv-modern .rv-section-title {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--rv-accent);
+  border-bottom: 1.5px solid var(--rv-accent);
+  padding-bottom: 4px;
+  margin-bottom: 10px;
+  opacity: 0.9;
+}
+.rv-modern .rv-entry { border-bottom: 1px solid #f0f0f0; }
+
+/* ══════════════════════════════════════════════════════════
    PRINT STYLES
-   Applied when window.print() is called or user does Ctrl+P.
-   Hides all UI chrome. Renders only the resume document.
-   White background, no accents, clean margins, no cut-off sections.
-══════════════════════════════════════════════════════════════════ */
+══════════════════════════════════════════════════════════ */
 @media print {
-
-  /* Hide everything on the page except the resume document */
   body > * { display: none !important; }
+  .print-root, .print-root * { display: revert !important; }
 
-  /* Show only the resume doc wrapper */
-  .print-root,
-  .print-root * { display: revert !important; }
-
-  /* Reset page */
-  @page {
-    size: A4 portrait;
-    margin: 16mm 18mm;
-  }
+  @page { size: A4 portrait; margin: 16mm 18mm; }
 
   .resume-doc {
-    /* Remove screen-specific chrome */
     border: none !important;
     box-shadow: none !important;
     border-radius: 0 !important;
-    border-left: none !important;
-
-    /* Full page width */
     width: 100% !important;
     max-width: 100% !important;
     padding: 0 !important;
     margin: 0 !important;
-
-    /* Typography */
     font-size: 11pt !important;
     line-height: 1.5 !important;
     color: #000 !important;
     background: #fff !important;
-    font-family: 'DM Sans', Arial, sans-serif !important;
   }
-
-  /* Name */
-  .rv-name {
-    font-size: 22pt !important;
-    color: #000 !important;
-    margin-bottom: 6pt !important;
-  }
-
-  /* Contact */
-  .rv-contact {
-    font-size: 9pt !important;
-    color: #333 !important;
-  }
-  .rv-contact-item::after { color: #999 !important; }
-
-  /* Rule — keep the strong top line */
-  .rv-rule {
-    border-top: 1.5pt solid #000 !important;
-    margin: 10pt 0 14pt !important;
-  }
-
-  /* Section titles */
+  .rv-name   { font-size: 22pt !important; color: #000 !important; }
+  .rv-contact { font-size: 9pt !important; color: #333 !important; }
+  .rv-rule   { border-top: 1.5pt solid #333 !important; }
   .rv-section-title {
     font-size: 8pt !important;
-    letter-spacing: 0.14em !important;
     color: #000 !important;
-    border-bottom: 0.5pt solid #ccc !important;
-    border-left: none !important;
-    padding-bottom: 3pt !important;
-    margin-bottom: 8pt !important;
-    padding-left: 0 !important;
-  }
-
-  /* Sections */
-  .rv-section {
-    margin-bottom: 14pt !important;
-    /* Avoid orphaned section headers */
-    break-inside: avoid-page;
-  }
-
-  /* Entries — avoid splitting bullets across pages */
-  .rv-entry {
-    break-inside: avoid-page;
-    margin-bottom: 9pt !important;
-    padding-bottom: 9pt !important;
-    border-bottom: 0.25pt solid #eee !important;
-  }
-  .rv-entry:last-child {
-    border-bottom: none !important;
-  }
-
-  /* Entry typography */
-  .rv-entry-title   { font-size: 10.5pt !important; color: #000 !important; }
-  .rv-entry-company { font-size: 9.5pt  !important; color: #333 !important; }
-  .rv-entry-date    { font-size: 9pt    !important; color: #555 !important; }
-  .rv-entry-grade   { font-size: 9pt    !important; color: #555 !important; }
-  .rv-entry-tech    { font-size: 9pt    !important; color: #555 !important; }
-  .rv-body          { font-size: 10pt   !important; color: #222 !important; }
-
-  /* Skills */
-  .rv-skills { gap: 4pt !important; }
-  .rv-skill {
-    font-size: 9pt !important;
-    padding: 2pt 7pt !important;
-    border: 0.5pt solid #ccc !important;
-    background: transparent !important;
-    color: #222 !important;
-  }
-
-  /* Modern template — remove left accent bar in print */
-  [data-template="modern"] .resume-doc {
+    border-bottom: 0.5pt solid #999 !important;
     border-left: none !important;
     padding-left: 0 !important;
   }
-  [data-template="modern"] .rv-section-title {
-    border-left: none !important;
-    padding-left: 0 !important;
+  .rv-entry  { break-inside: avoid-page; border-bottom: 0.25pt solid #eee !important; }
+  .rv-project-card { break-inside: avoid-page; }
+  .rv-project-link { display: none !important; }
+  .rv-tech-pill  { border: 0.5pt solid #ddd !important; font-size: 8pt !important; }
+  .rv-skill      { border: 0.5pt solid #ccc !important; background: transparent !important; }
+  .rv-skill-group-label { font-size: 7.5pt !important; min-width: 58pt; }
+  .rv-empty      { display: none !important; }
+  /* Modern print — flatten to single column */
+  .resume-doc.rv-modern { flex-direction: column !important; }
+  .rv-sidebar {
+    width: 100% !important;
+    background: #f5f5f5 !important;
+    color: #000 !important;
+    padding: 12pt 18pt !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 12pt !important;
   }
-
-  /* Hide empty state placeholder */
-  .rv-empty { display: none !important; }
-}
-
-/* ── Layout precision / overflow guards (screen) ── */
-
-.resume-doc {
-  word-break: break-word;
-  overflow-wrap: break-word;
-  hyphens: auto;
-}
-
-.rv-entry-top {
-  min-width: 0;
-}
-.rv-entry-left {
-  min-width: 0;
-  overflow: hidden;
-}
-.rv-entry-title,
-.rv-entry-company,
-.rv-entry-tech {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 100%;
-}
-/* Allow date/link to truncate gracefully */
-.rv-entry-date {
-  max-width: 160px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* Skills — consistent wrap */
-.rv-skills {
-  row-gap: 5px;
-}
-
-/* ── PROJECT CARDS (new shape) ────────────────────────────────────────────── */
-.rv-project-card {
-  margin-bottom: 12px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #f0ece6;
-}
-.rv-project-card:last-child {
-  margin-bottom: 0;
-  padding-bottom: 0;
-  border-bottom: none;
-}
-.rv-project-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 4px;
-}
-.rv-project-links {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  flex-shrink: 0;
-}
-.rv-project-link {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  color: #666;
-  border: 1px solid #ddd;
-  border-radius: 3px;
-  flex-shrink: 0;
-}
-.rv-tech-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 3px;
-  margin-top: 5px;
-}
-.rv-tech-pill {
-  font-size: 10px;
-  padding: 2px 7px;
-  border: 1px solid #e8e4df;
-  border-radius: 3px;
-  color: #444;
-  font-family: 'DM Mono', monospace;
-  background: #fafaf9;
-}
-
-/* ── GROUPED SKILLS ───────────────────────────────────────────────────────── */
-.rv-skill-groups {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.rv-skill-group {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-}
-.rv-skill-group-label {
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #999;
-  font-family: 'DM Mono', monospace;
-  white-space: nowrap;
-  padding-top: 4px;
-  min-width: 68px;
-  flex-shrink: 0;
-}
-
-/* ── Print overrides for new elements ────────────────────────────────────── */
-@media print {
-  .rv-project-card    { break-inside: avoid-page; }
-  .rv-tech-pill       { border: 0.5pt solid #ddd !important; font-size: 8pt !important; }
-  .rv-project-link    { display: none !important; }
-  .rv-skill-group-label { font-size: 7.5pt !important; color: #777 !important; min-width: 58pt; }
-  .rv-tech-pills      { gap: 2pt !important; }
+  .rv-sidebar-name    { color: #000 !important; font-size: 18pt !important; width: 100%; }
+  .rv-sidebar-heading { color: #555 !important; }
+  .rv-sidebar-contact-item { color: #333 !important; }
+  .rv-sidebar-skill   { background: #eee !important; color: #333 !important; border-color: #ccc !important; }
+  .rv-main { padding: 12pt 18pt !important; }
 }

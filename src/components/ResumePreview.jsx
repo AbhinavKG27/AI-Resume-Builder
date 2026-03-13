@@ -1,16 +1,16 @@
 // 📁 Location: src/components/ResumePreview.jsx  ← MODIFIED
-// Changes: grouped skills display, project cards with tech pills + link icons
+// Changes:
+//   - Classic/Minimal: single-column, accent via --rv-accent CSS var
+//   - Modern: real two-column layout (sidebar + main) via template="modern"
+//   - All accent colors driven by --rv-accent set by useThemeState
 
 import "./ResumePreview.css";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
-
-// Normalise skills — handles both old string and new object shape
 function parseSkills(skills) {
   if (!skills) return { technical: [], soft: [], tools: [] };
   if (typeof skills === "string") {
-    const list = skills.split(",").map(s => s.trim()).filter(Boolean);
-    return { technical: list, soft: [], tools: [] };
+    return { technical: skills.split(",").map(s => s.trim()).filter(Boolean), soft: [], tools: [] };
   }
   return {
     technical: Array.isArray(skills.technical) ? skills.technical : [],
@@ -25,18 +25,83 @@ const SKILL_GROUP_LABELS = {
   tools:     "Tools & Tech",
 };
 
+// ── All skills flattened (for Modern sidebar) ─────────────────────────────────
+function flatSkills(groups) {
+  return [...(groups.technical ?? []), ...(groups.soft ?? []), ...(groups.tools ?? [])];
+}
+
+// ── Shared entry renderers ─────────────────────────────────────────────────────
+function ExperienceEntries({ experience }) {
+  return experience.map(exp => (
+    <div key={exp.id} className="rv-entry">
+      <div className="rv-entry-top">
+        <div className="rv-entry-left">
+          <span className="rv-entry-title">{exp.role || "Role"}</span>
+          <span className="rv-entry-company">{exp.company || "Company"}</span>
+        </div>
+        {exp.duration && <span className="rv-entry-date">{exp.duration}</span>}
+      </div>
+      {exp.description && <p className="rv-body rv-entry-body">{exp.description}</p>}
+    </div>
+  ));
+}
+
+function EducationEntries({ education }) {
+  return education.map(edu => (
+    <div key={edu.id} className="rv-entry">
+      <div className="rv-entry-top">
+        <div className="rv-entry-left">
+          <span className="rv-entry-title">{edu.degree || "Degree"}</span>
+          <span className="rv-entry-company">{edu.institution || "Institution"}</span>
+        </div>
+        <div className="rv-entry-right">
+          {edu.year  && <span className="rv-entry-date">{edu.year}</span>}
+          {edu.grade && <span className="rv-entry-grade">{edu.grade}</span>}
+        </div>
+      </div>
+    </div>
+  ));
+}
+
+function ProjectEntries({ projects }) {
+  return projects.map(proj => {
+    const techList  = Array.isArray(proj.techStack)
+      ? proj.techStack
+      : (proj.tech ? proj.tech.split(",").map(s => s.trim()).filter(Boolean) : []);
+    const liveUrl   = proj.liveUrl   || proj.link || "";
+    const githubUrl = proj.githubUrl || "";
+    return (
+      <div key={proj.id} className="rv-project-card">
+        <div className="rv-project-header">
+          <span className="rv-entry-title">{proj.name || "Project"}</span>
+          <div className="rv-project-links">
+            {liveUrl   && <span className="rv-project-link" title={liveUrl}><LinkIcon /></span>}
+            {githubUrl && <span className="rv-project-link" title={githubUrl}><GithubIcon /></span>}
+          </div>
+        </div>
+        {proj.description && <p className="rv-body rv-entry-body">{proj.description}</p>}
+        {techList.length > 0 && (
+          <div className="rv-tech-pills">
+            {techList.map((t, i) => <span key={i} className="rv-tech-pill">{t}</span>)}
+          </div>
+        )}
+      </div>
+    );
+  });
+}
+
+// ── Main component ─────────────────────────────────────────────────────────────
 export default function ResumePreview({ resume, template = "classic" }) {
   const { personal, summary, education, experience, projects, links } = resume;
-  const skillGroups = parseSkills(resume.skills);
+  const skillGroups  = parseSkills(resume.skills);
+  const allSkills    = flatSkills(skillGroups);
 
   const hasPersonal   = personal?.name?.trim();
   const hasSummary    = summary?.trim();
   const hasEducation  = education?.length > 0;
   const hasExperience = experience?.length > 0;
   const hasProjects   = projects?.length > 0;
-  const hasSkills     = skillGroups.technical.length > 0
-                     || skillGroups.soft.length > 0
-                     || skillGroups.tools.length > 0;
+  const hasSkills     = allSkills.length > 0;
 
   const contactItems = [
     personal?.email,
@@ -46,11 +111,99 @@ export default function ResumePreview({ resume, template = "classic" }) {
     links?.linkedin || null,
   ].filter(Boolean);
 
+  const isEmpty = !hasPersonal && !hasSummary && !hasExperience && !hasEducation && !hasProjects && !hasSkills;
+
+  // ── MODERN — real 2-column layout ─────────────────────────────────────────
+  if (template === "modern") {
+    return (
+      <div className="resume-doc rv-modern">
+
+        {/* LEFT SIDEBAR — accent background */}
+        <aside className="rv-sidebar">
+          <div className="rv-sidebar-name">
+            {hasPersonal ? personal.name : <span className="rv-ghost-light">Your Name</span>}
+          </div>
+
+          {contactItems.length > 0 && (
+            <div className="rv-sidebar-section">
+              <h3 className="rv-sidebar-heading">Contact</h3>
+              <div className="rv-sidebar-contact">
+                {contactItems.map((item, i) => (
+                  <span key={i} className="rv-sidebar-contact-item">{item}</span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {hasSkills && (
+            <div className="rv-sidebar-section">
+              <h3 className="rv-sidebar-heading">Skills</h3>
+              <div className="rv-sidebar-skills">
+                {allSkills.map((s, i) => (
+                  <span key={i} className="rv-sidebar-skill">{s}</span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {(links?.github || links?.linkedin) && (
+            <div className="rv-sidebar-section">
+              <h3 className="rv-sidebar-heading">Links</h3>
+              <div className="rv-sidebar-contact">
+                {links.github   && <span className="rv-sidebar-contact-item">{links.github}</span>}
+                {links.linkedin && <span className="rv-sidebar-contact-item">{links.linkedin}</span>}
+              </div>
+            </div>
+          )}
+        </aside>
+
+        {/* RIGHT MAIN — white background */}
+        <main className="rv-main">
+          {isEmpty && (
+            <div className="rv-empty">
+              <p>Fill in the form to see your resume preview here.</p>
+              <p>Click <strong>Load Sample Data</strong> for an example.</p>
+            </div>
+          )}
+
+          {hasSummary && (
+            <section className="rv-section">
+              <h2 className="rv-section-title">Summary</h2>
+              <p className="rv-body">{summary}</p>
+            </section>
+          )}
+
+          {hasExperience && (
+            <section className="rv-section">
+              <h2 className="rv-section-title">Experience</h2>
+              <ExperienceEntries experience={experience} />
+            </section>
+          )}
+
+          {hasEducation && (
+            <section className="rv-section">
+              <h2 className="rv-section-title">Education</h2>
+              <EducationEntries education={education} />
+            </section>
+          )}
+
+          {hasProjects && (
+            <section className="rv-section">
+              <h2 className="rv-section-title">Projects</h2>
+              <ProjectEntries projects={projects} />
+            </section>
+          )}
+        </main>
+
+      </div>
+    );
+  }
+
+  // ── CLASSIC / MINIMAL — single column ─────────────────────────────────────
   return (
     <div data-template={template}>
       <div className="resume-doc">
 
-        {/* ── NAME + CONTACT ── */}
         <div className="rv-header">
           <h1 className="rv-name">
             {hasPersonal ? personal.name : <span className="rv-ghost">Your Name</span>}
@@ -66,7 +219,6 @@ export default function ResumePreview({ resume, template = "classic" }) {
 
         <div className="rv-rule" />
 
-        {/* ── SUMMARY ── */}
         {hasSummary && (
           <section className="rv-section">
             <h2 className="rv-section-title">Summary</h2>
@@ -74,92 +226,27 @@ export default function ResumePreview({ resume, template = "classic" }) {
           </section>
         )}
 
-        {/* ── EXPERIENCE ── */}
         {hasExperience && (
           <section className="rv-section">
             <h2 className="rv-section-title">Experience</h2>
-            {experience.map(exp => (
-              <div key={exp.id} className="rv-entry">
-                <div className="rv-entry-top">
-                  <div className="rv-entry-left">
-                    <span className="rv-entry-title">{exp.role || "Role"}</span>
-                    <span className="rv-entry-company">{exp.company || "Company"}</span>
-                  </div>
-                  {exp.duration && <span className="rv-entry-date">{exp.duration}</span>}
-                </div>
-                {exp.description && <p className="rv-body rv-entry-body">{exp.description}</p>}
-              </div>
-            ))}
+            <ExperienceEntries experience={experience} />
           </section>
         )}
 
-        {/* ── EDUCATION ── */}
         {hasEducation && (
           <section className="rv-section">
             <h2 className="rv-section-title">Education</h2>
-            {education.map(edu => (
-              <div key={edu.id} className="rv-entry">
-                <div className="rv-entry-top">
-                  <div className="rv-entry-left">
-                    <span className="rv-entry-title">{edu.degree || "Degree"}</span>
-                    <span className="rv-entry-company">{edu.institution || "Institution"}</span>
-                  </div>
-                  <div className="rv-entry-right">
-                    {edu.year  && <span className="rv-entry-date">{edu.year}</span>}
-                    {edu.grade && <span className="rv-entry-grade">{edu.grade}</span>}
-                  </div>
-                </div>
-              </div>
-            ))}
+            <EducationEntries education={education} />
           </section>
         )}
 
-        {/* ── PROJECTS — cards with tech pills + link icons ── */}
         {hasProjects && (
           <section className="rv-section">
             <h2 className="rv-section-title">Projects</h2>
-            {projects.map(proj => {
-              // Support both old shape (tech string, link) and new shape (techStack[], liveUrl, githubUrl)
-              const techList = Array.isArray(proj.techStack)
-                ? proj.techStack
-                : (proj.tech ? proj.tech.split(",").map(s => s.trim()).filter(Boolean) : []);
-              const liveUrl   = proj.liveUrl   || proj.link || "";
-              const githubUrl = proj.githubUrl || "";
-
-              return (
-                <div key={proj.id} className="rv-project-card">
-                  <div className="rv-project-header">
-                    <span className="rv-entry-title">{proj.name || "Project"}</span>
-                    <div className="rv-project-links">
-                      {liveUrl && (
-                        <span className="rv-project-link" title={liveUrl}>
-                          <LinkIcon />
-                        </span>
-                      )}
-                      {githubUrl && (
-                        <span className="rv-project-link" title={githubUrl}>
-                          <GithubIcon />
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  {proj.description && (
-                    <p className="rv-body rv-entry-body">{proj.description}</p>
-                  )}
-                  {techList.length > 0 && (
-                    <div className="rv-tech-pills">
-                      {techList.map((t, i) => (
-                        <span key={i} className="rv-tech-pill">{t}</span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+            <ProjectEntries projects={projects} />
           </section>
         )}
 
-        {/* ── SKILLS — grouped by category ── */}
         {hasSkills && (
           <section className="rv-section">
             <h2 className="rv-section-title">Skills</h2>
@@ -168,13 +255,9 @@ export default function ResumePreview({ resume, template = "classic" }) {
                 if (!tags.length) return null;
                 return (
                   <div key={key} className="rv-skill-group">
-                    <span className="rv-skill-group-label">
-                      {SKILL_GROUP_LABELS[key]}
-                    </span>
+                    <span className="rv-skill-group-label">{SKILL_GROUP_LABELS[key]}</span>
                     <div className="rv-skills">
-                      {tags.map((s, i) => (
-                        <span key={i} className="rv-skill">{s}</span>
-                      ))}
+                      {tags.map((s, i) => <span key={i} className="rv-skill">{s}</span>)}
                     </div>
                   </div>
                 );
@@ -183,8 +266,7 @@ export default function ResumePreview({ resume, template = "classic" }) {
           </section>
         )}
 
-        {/* ── Empty state ── */}
-        {!hasPersonal && !hasSummary && !hasExperience && !hasEducation && !hasProjects && !hasSkills && (
+        {isEmpty && (
           <div className="rv-empty">
             <p>Your resume preview will appear here as you fill in the form.</p>
             <p>Click <strong>Load Sample Data</strong> to see an example.</p>
@@ -196,7 +278,6 @@ export default function ResumePreview({ resume, template = "classic" }) {
   );
 }
 
-// ── Inline SVG icons ─────────────────────────────────────────────────────────
 function LinkIcon() {
   return (
     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

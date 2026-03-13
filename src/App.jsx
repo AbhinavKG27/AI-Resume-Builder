@@ -1,10 +1,9 @@
-// 📁 Location: src/App.jsx  ← MODIFIED (replace entire file)
-// Changes: imports useTemplateState, passes template + setTemplate to Builder + Preview
-// Also imports templates.css for global template overrides
+// 📁 Location: src/App.jsx  ← MODIFIED
 
 import { useState, useCallback } from "react";
 import { useResumeState }   from "./hooks/useResumeState";
 import { useTemplateState } from "./hooks/useTemplateState";
+import { useThemeState }    from "./hooks/useThemeState";
 
 import TopNav      from "./components/TopNav";
 import HomePage    from "./pages/HomePage";
@@ -19,9 +18,10 @@ export default function App() {
   const [route, setRoute] = useState("/");
   const nav = useCallback((r) => { setRoute(r); window.scrollTo(0, 0); }, []);
 
-  const resumeState  = useResumeState();
+  const resumeState              = useResumeState();
   const { template, setTemplate } = useTemplateState();
-  const { resume }   = resumeState;
+  const { themeId, setTheme }    = useThemeState();
+  const { resume } = resumeState;
 
   const handlers = {
     loadSample:       resumeState.loadSample,
@@ -45,25 +45,32 @@ export default function App() {
     <>
       <TopNav route={route} nav={nav} />
 
-      {route === "/"        && <HomePage    nav={nav} />}
+      {route === "/"        && <HomePage nav={nav} />}
+
       {route === "/builder" && (
         <BuilderPage
           resume={resume}
           handlers={handlers}
           template={template}
           setTemplate={setTemplate}
+          themeId={themeId}
+          setTheme={setTheme}
           nav={nav}
         />
       )}
+
       {route === "/preview" && (
         <PreviewPage
           resume={resume}
           template={template}
           setTemplate={setTemplate}
+          themeId={themeId}
+          setTheme={setTheme}
           nav={nav}
         />
       )}
-      {route === "/proof"   && <ProofPage nav={nav} />}
+
+      {route === "/proof" && <ProofPage nav={nav} />}
     </>
   );
 }

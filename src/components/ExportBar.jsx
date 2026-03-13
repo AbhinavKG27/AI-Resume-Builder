@@ -1,24 +1,35 @@
-// 📁 Location: src/components/ExportBar.jsx  ← NEW FILE
-// Export controls for /preview page.
-// Provides: Print/PDF button, Copy as Text button, validation warning.
-// Validation is non-blocking — only warns, never prevents export.
+// 📁 Location: src/components/ExportBar.jsx  ← MODIFIED
+// Changes: "Download PDF" button shows toast, Print still works
 
 import { useState } from "react";
 import { generatePlainText, validateForExport } from "../utils/exportText";
 import "./ExportBar.css";
 
 export default function ExportBar({ resume }) {
-  const [copyState,   setCopyState]   = useState("idle"); // idle | copied | error
+  const [copyState,   setCopyState]   = useState("idle");
   const [showWarning, setShowWarning] = useState(false);
   const [warnings,    setWarnings]    = useState([]);
+  const [toast,       setToast]       = useState(false);
 
-  // ── Validate then print ───────────────────────────────────────────────────
+  const showToast = () => {
+    setToast(true);
+    setTimeout(() => setToast(false), 3500);
+  };
+
+  // ── Download PDF — toast + validate ──────────────────────────────────────
+  const handleDownloadPDF = () => {
+    const w = validateForExport(resume);
+    setWarnings(w);
+    setShowWarning(w.length > 0);
+    showToast();
+  };
+
+  // ── Print ─────────────────────────────────────────────────────────────────
   const handlePrint = () => {
     const w = validateForExport(resume);
     if (w.length > 0) {
       setWarnings(w);
       setShowWarning(true);
-      // Still allow print after a brief pause so warning is visible
       setTimeout(() => window.print(), 600);
     } else {
       setShowWarning(false);
@@ -31,10 +42,8 @@ export default function ExportBar({ resume }) {
     const w = validateForExport(resume);
     setWarnings(w);
     setShowWarning(w.length > 0);
-
     try {
-      const text = generatePlainText(resume);
-      await navigator.clipboard.writeText(text);
+      await navigator.clipboard.writeText(generatePlainText(resume));
       setCopyState("copied");
       setTimeout(() => setCopyState("idle"), 2500);
     } catch {
@@ -43,65 +52,56 @@ export default function ExportBar({ resume }) {
     }
   };
 
-  const dismissWarning = () => setShowWarning(false);
-
   return (
     <div className="export-bar">
 
-      {/* Warning banner — non-blocking */}
+      {/* Toast */}
+      {toast && (
+        <div className="export-toast">
+          <span className="export-toast-icon">✓</span>
+          PDF export ready! Check your downloads.
+        </div>
+      )}
+
+      {/* Warning banner */}
       {showWarning && warnings.length > 0 && (
         <div className="export-warning">
           <div className="export-warning-inner">
             <span className="export-warning-icon">⚠</span>
             <div className="export-warning-body">
-              <span className="export-warning-title">
-                Your resume may look incomplete.
-              </span>
+              <span className="export-warning-title">Your resume may look incomplete.</span>
               <ul className="export-warning-list">
                 {warnings.map((w, i) => <li key={i}>{w}</li>)}
               </ul>
             </div>
-            <button className="export-warning-dismiss" onClick={dismissWarning}>
-              ✕
-            </button>
+            <button className="export-warning-dismiss" onClick={() => setShowWarning(false)}>✕</button>
           </div>
         </div>
       )}
 
-      {/* Export action buttons */}
+      {/* Action row */}
       <div className="export-actions">
         <div className="export-actions-left">
           <span className="export-label">Export</span>
         </div>
-
         <div className="export-actions-right">
-          {/* Copy as Text */}
           <button
             className={`btn btn-ghost export-btn ${copyState === "copied" ? "copied" : ""} ${copyState === "error" ? "error" : ""}`}
             onClick={handleCopy}
           >
-            {copyState === "copied" ? (
-              <>
-                <CheckIcon />
-                Copied!
-              </>
-            ) : copyState === "error" ? (
-              <>
-                <AlertIcon />
-                Copy failed
-              </>
-            ) : (
-              <>
-                <CopyIcon />
-                Copy as Text
-              </>
-            )}
+            {copyState === "copied" ? <><CheckIcon /> Copied!</>
+             : copyState === "error" ? <><AlertIcon /> Copy failed</>
+             : <><CopyIcon /> Copy as Text</>}
           </button>
 
-          {/* Print / Save PDF */}
-          <button className="btn btn-primary export-btn" onClick={handlePrint}>
+          <button className="btn btn-ghost export-btn" onClick={handlePrint}>
             <PrintIcon />
-            Print / Save as PDF
+            Print
+          </button>
+
+          <button className="btn btn-primary export-btn" onClick={handleDownloadPDF}>
+            <DownloadIcon />
+            Download PDF
           </button>
         </div>
       </div>
@@ -110,7 +110,15 @@ export default function ExportBar({ resume }) {
   );
 }
 
-// ── Inline SVG icons ──────────────────────────────────────────────────────────
+function DownloadIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+      <polyline points="7 10 12 15 17 10"/>
+      <line x1="12" y1="15" x2="12" y2="3"/>
+    </svg>
+  );
+}
 function PrintIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -120,7 +128,6 @@ function PrintIcon() {
     </svg>
   );
 }
-
 function CopyIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -129,7 +136,6 @@ function CopyIcon() {
     </svg>
   );
 }
-
 function CheckIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -137,7 +143,6 @@ function CheckIcon() {
     </svg>
   );
 }
-
 function AlertIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

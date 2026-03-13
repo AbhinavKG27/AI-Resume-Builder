@@ -4,7 +4,7 @@ import { useState } from "react";
 import FormField       from "../components/FormField";
 import ResumePreview   from "../components/ResumePreview";
 import ATSScore        from "../components/ATSScore";
-import TemplatePicker  from "../components/TemplatePicker";
+import DesignControls  from "../components/DesignControls";
 import BulletGuidance  from "../components/BulletGuidance";
 import SkillsSection   from "../components/SkillsSection";
 import ProjectsSection from "../components/ProjectsSection";
@@ -54,7 +54,7 @@ const SECTIONS = [
   { id: "links",      label: "Links"      },
 ];
 
-export default function BuilderPage({ resume, handlers, template, setTemplate, nav }) {
+export default function BuilderPage({ resume, handlers, template, setTemplate, themeId, setTheme, nav }) {
   const {
     loadSample, clearAll,
     setPersonal, setSummary, setLinks,
@@ -215,7 +215,7 @@ export default function BuilderPage({ resume, handlers, template, setTemplate, n
 
       {/* ── RIGHT: TEMPLATE + LIVE PREVIEW + ATS ── */}
       <div className="builder-right">
-        <TemplatePicker template={template} setTemplate={setTemplate} />
+        <DesignControls template={template} setTemplate={setTemplate} themeId={themeId} setTheme={setTheme} />
 
         <div className="preview-panel-header">
           <span className="label">Live Preview</span>
