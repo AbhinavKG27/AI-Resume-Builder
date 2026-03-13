@@ -1,5 +1,6 @@
-// 📁 Location: src/components/ExportBar.jsx  ← MODIFIED
-// Changes: "Download PDF" button shows toast, Print still works
+// 📁 Location: src/components/ExportBar.jsx  ← FIXED
+// Fix 1: Download PDF now triggers window.print() for real browser PDF save
+// Fix 2: Print uses dedicated print-only class approach
 
 import { useState } from "react";
 import { generatePlainText, validateForExport } from "../utils/exportText";
@@ -11,31 +12,31 @@ export default function ExportBar({ resume }) {
   const [warnings,    setWarnings]    = useState([]);
   const [toast,       setToast]       = useState(false);
 
-  const showToast = () => {
-    setToast(true);
-    setTimeout(() => setToast(false), 3500);
+  // ── Shared print trigger ──────────────────────────────────────────────────
+  const triggerPrint = (validateFirst = true) => {
+    if (validateFirst) {
+      const w = validateForExport(resume);
+      if (w.length > 0) {
+        setWarnings(w);
+        setShowWarning(true);
+        setTimeout(() => window.print(), 400);
+        return;
+      }
+    }
+    setShowWarning(false);
+    window.print();
   };
 
-  // ── Download PDF — toast + validate ──────────────────────────────────────
+  // ── Download PDF — triggers real browser print dialog ────────────────────
   const handleDownloadPDF = () => {
-    const w = validateForExport(resume);
-    setWarnings(w);
-    setShowWarning(w.length > 0);
-    showToast();
+    // Show toast first, then open print dialog (user saves as PDF)
+    setToast(true);
+    setTimeout(() => setToast(false), 3000);
+    setTimeout(() => triggerPrint(false), 300);
   };
 
   // ── Print ─────────────────────────────────────────────────────────────────
-  const handlePrint = () => {
-    const w = validateForExport(resume);
-    if (w.length > 0) {
-      setWarnings(w);
-      setShowWarning(true);
-      setTimeout(() => window.print(), 600);
-    } else {
-      setShowWarning(false);
-      window.print();
-    }
-  };
+  const handlePrint = () => triggerPrint(true);
 
   // ── Copy plain text ───────────────────────────────────────────────────────
   const handleCopy = async () => {
@@ -59,7 +60,7 @@ export default function ExportBar({ resume }) {
       {toast && (
         <div className="export-toast">
           <span className="export-toast-icon">✓</span>
-          PDF export ready! Check your downloads.
+          Opening print dialog — choose "Save as PDF"
         </div>
       )}
 
@@ -85,6 +86,7 @@ export default function ExportBar({ resume }) {
           <span className="export-label">Export</span>
         </div>
         <div className="export-actions-right">
+
           <button
             className={`btn btn-ghost export-btn ${copyState === "copied" ? "copied" : ""} ${copyState === "error" ? "error" : ""}`}
             onClick={handleCopy}
@@ -95,14 +97,13 @@ export default function ExportBar({ resume }) {
           </button>
 
           <button className="btn btn-ghost export-btn" onClick={handlePrint}>
-            <PrintIcon />
-            Print
+            <PrintIcon /> Print
           </button>
 
           <button className="btn btn-primary export-btn" onClick={handleDownloadPDF}>
-            <DownloadIcon />
-            Download PDF
+            <DownloadIcon /> Download PDF
           </button>
+
         </div>
       </div>
 

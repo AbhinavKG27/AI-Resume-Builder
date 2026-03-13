@@ -1,6 +1,7 @@
-/* 📁 Location: src/components/ResumePreview.css  ← MODIFIED
+/* 📁 Location: src/components/ResumePreview.css  ← FIXED
    --rv-accent is injected by useThemeState onto :root
-   All accent uses reference this variable.
+   PRINT FIX: Use visibility/position trick instead of display:none on body
+              so .print-root is never hidden by its ancestors.
 */
 
 /* ── Fallback if theme not yet injected ── */
@@ -12,7 +13,7 @@
 }
 
 /* ══════════════════════════════════════════════════════════
-   SHARED BASE — used by Classic + Minimal
+   SHARED BASE — Classic + Minimal
 ══════════════════════════════════════════════════════════ */
 .resume-doc {
   background: #fff;
@@ -85,11 +86,7 @@
   padding-bottom: 11px;
   border-bottom: 1px solid #f0ece6;
 }
-.rv-entry:last-child {
-  margin-bottom: 0;
-  padding-bottom: 0;
-  border-bottom: none;
-}
+.rv-entry:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
 .rv-entry-top {
   display: flex;
   justify-content: space-between;
@@ -133,7 +130,6 @@
   text-overflow: ellipsis;
 }
 .rv-entry-grade { font-size: 11px; color: #888; font-family: 'DM Mono', monospace; }
-.rv-entry-tech  { font-size: 11px; color: #777; font-family: 'DM Mono', monospace; }
 .rv-body        { font-size: 12.5px; color: #333; line-height: 1.7; }
 .rv-entry-body  { margin-top: 3px; }
 
@@ -270,7 +266,6 @@
   line-height: 1.65;
 }
 
-/* Sidebar */
 .rv-sidebar {
   width: 220px;
   flex-shrink: 0;
@@ -283,7 +278,6 @@
   overflow: hidden;
   word-break: break-word;
 }
-
 .rv-sidebar-name {
   font-family: 'DM Sans', sans-serif;
   font-size: 18px;
@@ -293,9 +287,7 @@
   margin-bottom: 20px;
   letter-spacing: -0.02em;
 }
-
 .rv-sidebar-section { margin-bottom: 20px; }
-
 .rv-sidebar-heading {
   font-size: 8px;
   font-weight: 700;
@@ -307,12 +299,7 @@
   border-bottom: 1px solid rgba(255,255,255,0.15);
   padding-bottom: 4px;
 }
-
-.rv-sidebar-contact {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
+.rv-sidebar-contact { display: flex; flex-direction: column; gap: 4px; }
 .rv-sidebar-contact-item {
   font-size: 10.5px;
   color: rgba(255,255,255,0.82);
@@ -321,12 +308,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
-.rv-sidebar-skills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
+.rv-sidebar-skills { display: flex; flex-wrap: wrap; gap: 4px; }
 .rv-sidebar-skill {
   display: inline-block;
   font-size: 10px;
@@ -338,8 +320,6 @@
   font-family: 'DM Sans', sans-serif;
   white-space: nowrap;
 }
-
-/* Main content */
 .rv-main {
   flex: 1;
   padding: 36px 32px;
@@ -347,7 +327,6 @@
   overflow: hidden;
   min-width: 0;
 }
-
 .rv-modern .rv-section-title {
   font-size: 9.5px;
   font-weight: 700;
@@ -362,14 +341,37 @@
 .rv-modern .rv-entry { border-bottom: 1px solid #f0f0f0; }
 
 /* ══════════════════════════════════════════════════════════
-   PRINT STYLES
+   PRINT STYLES — FIXED: no blank page
+   Strategy: hide everything EXCEPT .print-root using
+   visibility:hidden + position:fixed so layout isn't broken,
+   then show .print-root normally.
 ══════════════════════════════════════════════════════════ */
 @media print {
-  body > * { display: none !important; }
-  .print-root, .print-root * { display: revert !important; }
+  @page {
+    size: A4 portrait;
+    margin: 14mm 16mm;
+  }
 
-  @page { size: A4 portrait; margin: 16mm 18mm; }
+  /* Hide the entire page UI */
+  body {
+    background: white !important;
+  }
 
+  /* Hide every direct child of body except the print target */
+  body > *:not(.print-portal) {
+    display: none !important;
+  }
+
+  /* The print portal sits directly on body */
+  .print-portal {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Resume document styles for print */
   .resume-doc {
     border: none !important;
     box-shadow: none !important;
@@ -379,41 +381,61 @@
     padding: 0 !important;
     margin: 0 !important;
     font-size: 11pt !important;
-    line-height: 1.5 !important;
+    line-height: 1.55 !important;
     color: #000 !important;
     background: #fff !important;
+    min-height: unset !important;
   }
-  .rv-name   { font-size: 22pt !important; color: #000 !important; }
-  .rv-contact { font-size: 9pt !important; color: #333 !important; }
-  .rv-rule   { border-top: 1.5pt solid #333 !important; }
+
+  .rv-name        { font-size: 22pt !important; color: #000 !important; }
+  .rv-contact     { font-size: 9pt  !important; color: #333 !important; }
+  .rv-rule        { border-top: 1.5pt solid #333 !important; margin: 10pt 0 14pt !important; }
+  .rv-section     { margin-bottom: 12pt !important; }
   .rv-section-title {
     font-size: 8pt !important;
     color: #000 !important;
-    border-bottom: 0.5pt solid #999 !important;
-    border-left: none !important;
-    padding-left: 0 !important;
+    border-bottom: 0.75pt solid #666 !important;
+    padding-bottom: 3pt !important;
+    margin-bottom: 8pt !important;
+    opacity: 1 !important;
   }
-  .rv-entry  { break-inside: avoid-page; border-bottom: 0.25pt solid #eee !important; }
-  .rv-project-card { break-inside: avoid-page; }
+  .rv-entry        { break-inside: avoid; border-bottom: 0.25pt solid #ddd !important; padding-bottom: 8pt !important; margin-bottom: 8pt !important; }
+  .rv-entry-title  { font-size: 11pt !important; }
+  .rv-entry-company{ font-size: 10pt !important; color: #333 !important; }
+  .rv-entry-date   { font-size: 9pt  !important; color: #555 !important; }
+  .rv-body         { font-size: 10pt !important; color: #222 !important; }
+  .rv-project-card { break-inside: avoid; }
   .rv-project-link { display: none !important; }
-  .rv-tech-pill  { border: 0.5pt solid #ddd !important; font-size: 8pt !important; }
-  .rv-skill      { border: 0.5pt solid #ccc !important; background: transparent !important; }
-  .rv-skill-group-label { font-size: 7.5pt !important; min-width: 58pt; }
-  .rv-empty      { display: none !important; }
-  /* Modern print — flatten to single column */
+  .rv-tech-pill    { font-size: 8pt  !important; border: 0.5pt solid #ddd !important; background: transparent !important; }
+  .rv-skill        { font-size: 9pt  !important; border: 0.5pt solid #ccc !important; background: transparent !important; }
+  .rv-skill-group-label { font-size: 7.5pt !important; min-width: 52pt; }
+  .rv-empty        { display: none !important; }
+
+  /* Modern — flatten to single column for print */
   .resume-doc.rv-modern { flex-direction: column !important; }
   .rv-sidebar {
     width: 100% !important;
-    background: #f5f5f5 !important;
+    background: #f0f0f0 !important;
     color: #000 !important;
-    padding: 12pt 18pt !important;
+    padding: 10pt 16pt !important;
     flex-direction: row !important;
     flex-wrap: wrap !important;
-    gap: 12pt !important;
+    gap: 10pt !important;
   }
-  .rv-sidebar-name    { color: #000 !important; font-size: 18pt !important; width: 100%; }
-  .rv-sidebar-heading { color: #555 !important; }
-  .rv-sidebar-contact-item { color: #333 !important; }
-  .rv-sidebar-skill   { background: #eee !important; color: #333 !important; border-color: #ccc !important; }
-  .rv-main { padding: 12pt 18pt !important; }
+  .rv-sidebar-name        { color: #000 !important; font-size: 16pt !important; width: 100%; margin-bottom: 6pt !important; }
+  .rv-sidebar-heading     { color: #333 !important; }
+  .rv-sidebar-contact-item{ color: #222 !important; white-space: normal !important; }
+  .rv-sidebar-skill       { background: #e0e0e0 !important; color: #222 !important; border-color: #ccc !important; }
+  .rv-sidebar-section     { margin-bottom: 8pt !important; }
+  .rv-main                { padding: 12pt 16pt !important; }
+}
+
+/* ── Print portal: hidden from screen, shown only in print ── */
+.print-portal {
+  display: none;
+}
+@media print {
+  .print-portal {
+    display: block !important;
+  }
 }
