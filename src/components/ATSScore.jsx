@@ -29,7 +29,11 @@ function getImprovements(resume) {
     items.push("Expand your summary to 40–120 words for best ATS results.");
   }
 
-  const skillCount = resume?.skills?.split(",").map(s => s.trim()).filter(Boolean).length ?? 0;
+  const s = resume?.skills;
+  const skillCount = !s ? 0
+    : typeof s === "string"
+      ? s.split(",").map(x => x.trim()).filter(Boolean).length
+      : (s.technical?.length ?? 0) + (s.soft?.length ?? 0) + (s.tools?.length ?? 0);
   if (skillCount < 8) {
     items.push(`Add more skills — you have ${skillCount}, target is 8+.`);
   }

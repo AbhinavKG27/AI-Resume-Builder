@@ -60,23 +60,37 @@ export function generatePlainText(resume) {
   // ── Projects ──────────────────────────────────────────────────────────────
   if (projects?.length > 0) {
     const lines = projects.map(proj => {
-      const name  = proj.name?.trim() || "Untitled Project";
-      const tech  = proj.tech?.trim()  ? `  [${proj.tech}]`  : "";
-      const link  = proj.link?.trim()  ? `\n  ${proj.link}`  : "";
+      const name = proj.name?.trim() || "Untitled Project";
+      // Support both old shape (tech string) and new shape (techStack[])
+      const techArr = Array.isArray(proj.techStack) ? proj.techStack
+                    : (proj.tech ? proj.tech.split(",").map(s => s.trim()).filter(Boolean) : []);
+      const tech  = techArr.length > 0 ? `  [${techArr.join(", ")}]` : "";
+      // Support both old (link) and new (liveUrl + githubUrl)
+      const liveUrl   = proj.liveUrl   || proj.link || "";
+      const githubUrl = proj.githubUrl || "";
+      const linkLine  = [liveUrl, githubUrl].filter(Boolean).join("  ·  ");
+      const link  = linkLine  ? `\n  ${linkLine}`                       : "";
       const desc  = proj.description?.trim() ? `\n  ${proj.description.trim()}` : "";
       return `${name}${tech}${link}${desc}`;
     }).join("\n\n");
     parts.push(section("Projects", lines));
   }
 
-  // ── Skills ────────────────────────────────────────────────────────────────
-  if (skills?.trim()) {
-    const formatted = skills
-      .split(",")
-      .map(s => s.trim())
-      .filter(Boolean)
-      .join("  ·  ");
-    parts.push(section("Skills", formatted));
+  // ── Skills — handles both old string and new object ───────────────────────
+  const skillsRaw = skills;
+  if (skillsRaw) {
+    let formatted = "";
+    if (typeof skillsRaw === "string" && skillsRaw.trim()) {
+      formatted = skillsRaw.split(",").map(s => s.trim()).filter(Boolean).join("  ·  ");
+    } else if (typeof skillsRaw === "object") {
+      const groups = [
+        skillsRaw.technical?.length ? `Technical: ${skillsRaw.technical.join(", ")}`   : "",
+        skillsRaw.soft?.length      ? `Soft Skills: ${skillsRaw.soft.join(", ")}`       : "",
+        skillsRaw.tools?.length     ? `Tools & Tech: ${skillsRaw.tools.join(", ")}`     : "",
+      ].filter(Boolean);
+      formatted = groups.join("\n");
+    }
+    if (formatted) parts.push(section("Skills", formatted));
   }
 
   // ── Links ─────────────────────────────────────────────────────────────────

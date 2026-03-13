@@ -1,3 +1,5 @@
+// 📁 Location: src/data/sampleData.js  ← MODIFIED
+
 export const SAMPLE_DATA = {
   personal: {
     name: "Priya Nair",
@@ -34,17 +36,31 @@ export const SAMPLE_DATA = {
         "Built customer-facing features for Freshdesk using Vue.js and Rails. Improved API response time by 30% through query optimisation.",
     },
   ],
+  // Projects now use the new shape: techStack[], liveUrl, githubUrl
   projects: [
     {
       id: "proj-1",
       name: "OpenResume",
-      tech: "Next.js, Tailwind, Supabase",
-      description:
-        "Open-source resume builder with ATS scoring. 2,000+ GitHub stars. Featured on Product Hunt.",
-      link: "github.com/priya/openresume",
+      description: "Open-source resume builder with ATS scoring. 2,000+ GitHub stars. Featured on Product Hunt.",
+      techStack: ["Next.js", "Tailwind", "Supabase"],
+      liveUrl: "https://openresume.dev",
+      githubUrl: "github.com/priya/openresume",
+    },
+    {
+      id: "proj-2",
+      name: "PayTrack",
+      description: "Expense tracking dashboard with real-time sync. Reduced reconciliation time by 60% for 500+ users.",
+      techStack: ["React", "Node.js", "PostgreSQL"],
+      liveUrl: "",
+      githubUrl: "github.com/priya/paytrack",
     },
   ],
-  skills: "React, TypeScript, Node.js, PostgreSQL, Redis, Docker, AWS, Figma",
+  // Skills is now a structured object with three categories
+  skills: {
+    technical: ["React", "TypeScript", "Node.js", "PostgreSQL", "Redis"],
+    soft:      ["Team Leadership", "Technical Writing", "Mentoring"],
+    tools:     ["Docker", "AWS", "Figma", "Git"],
+  },
   links: {
     github: "github.com/priyanair",
     linkedin: "linkedin.com/in/priyanair",
@@ -57,6 +73,6 @@ export const EMPTY_DATA = {
   education: [],
   experience: [],
   projects: [],
-  skills: "",
+  skills: { technical: [], soft: [], tools: [] },
   links: { github: "", linkedin: "" },
 };

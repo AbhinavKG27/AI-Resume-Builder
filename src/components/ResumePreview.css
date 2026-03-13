@@ -316,3 +316,87 @@
 .rv-skills {
   row-gap: 5px;
 }
+
+/* ── PROJECT CARDS (new shape) ────────────────────────────────────────────── */
+.rv-project-card {
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0ece6;
+}
+.rv-project-card:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+.rv-project-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.rv-project-links {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+.rv-project-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: #666;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.rv-tech-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-top: 5px;
+}
+.rv-tech-pill {
+  font-size: 10px;
+  padding: 2px 7px;
+  border: 1px solid #e8e4df;
+  border-radius: 3px;
+  color: #444;
+  font-family: 'DM Mono', monospace;
+  background: #fafaf9;
+}
+
+/* ── GROUPED SKILLS ───────────────────────────────────────────────────────── */
+.rv-skill-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.rv-skill-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.rv-skill-group-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #999;
+  font-family: 'DM Mono', monospace;
+  white-space: nowrap;
+  padding-top: 4px;
+  min-width: 68px;
+  flex-shrink: 0;
+}
+
+/* ── Print overrides for new elements ────────────────────────────────────── */
+@media print {
+  .rv-project-card    { break-inside: avoid-page; }
+  .rv-tech-pill       { border: 0.5pt solid #ddd !important; font-size: 8pt !important; }
+  .rv-project-link    { display: none !important; }
+  .rv-skill-group-label { font-size: 7.5pt !important; color: #777 !important; min-width: 58pt; }
+  .rv-tech-pills      { gap: 2pt !important; }
+}

@@ -43,10 +43,18 @@ const RULES = [
     id: "eight_skills",
     maxPoints: 10,
     check: (r) => {
-      const count = r.skills
-        ?.split(",")
-        .map((s) => s.trim())
-        .filter(Boolean).length ?? 0;
+      let count = 0;
+      const s = r.skills;
+      if (!s) { count = 0; }
+      else if (typeof s === "string") {
+        // legacy comma-string
+        count = s.split(",").map(x => x.trim()).filter(Boolean).length;
+      } else {
+        // new object shape { technical[], soft[], tools[] }
+        count = (s.technical?.length ?? 0)
+              + (s.soft?.length      ?? 0)
+              + (s.tools?.length     ?? 0);
+      }
       return count >= 8;
     },
     suggestion: "Add more skills (target 8+).",

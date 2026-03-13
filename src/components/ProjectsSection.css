@@ -1,0 +1,204 @@
+/* 📁 Location: src/components/ProjectsSection.css  ← NEW FILE */
+
+.projects-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+}
+
+/* Header */
+.projects-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+}
+.projects-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* Add button */
+.btn-add-project {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 13px;
+  border-radius: var(--radius);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+  border: 1px solid rgba(139,0,0,0.2);
+  background: var(--accent-soft);
+  color: var(--accent);
+  transition: all 0.15s;
+}
+.btn-add-project:hover {
+  background: rgba(139,0,0,0.12);
+  border-color: var(--accent);
+}
+
+/* Empty state */
+.projects-empty {
+  padding: var(--s3);
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-3);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-lg);
+  font-style: italic;
+}
+
+/* List */
+.projects-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+
+/* Entry card */
+.project-entry {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: box-shadow 0.15s;
+}
+.project-entry:hover {
+  box-shadow: var(--shadow);
+}
+
+/* Entry header — clickable row */
+.project-entry-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  cursor: pointer;
+  user-select: none;
+  gap: var(--s2);
+  background: var(--bg);
+  transition: background 0.12s;
+}
+.project-entry-header:hover { background: var(--bg-alt); }
+.project-entry.collapsed .project-entry-header {
+  border-radius: var(--radius-lg);
+}
+
+.project-entry-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.project-entry-num {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-3);
+  font-family: var(--font-mono);
+  flex-shrink: 0;
+}
+.project-entry-title-preview {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.project-entry-tech-count {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--text-3);
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  padding: 2px 7px;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.project-entry-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.btn-delete-project {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius);
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-3);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-delete-project:hover {
+  background: #fff0f0;
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.project-chevron {
+  color: var(--text-3);
+  display: flex;
+  align-items: center;
+  transition: transform 0.2s ease;
+}
+.project-chevron.open {
+  transform: rotate(180deg);
+}
+
+/* Entry body */
+.project-entry-body {
+  padding: var(--s2) var(--s2) var(--s3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  border-top: 1px solid var(--border);
+  animation: slideOpen 0.18s ease;
+}
+@keyframes slideOpen {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Description + counter */
+.desc-field-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  position: relative;
+}
+.desc-textarea {
+  padding-bottom: 22px; /* room for counter */
+}
+.desc-counter {
+  position: absolute;
+  bottom: 8px;
+  right: 10px;
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--text-3);
+  pointer-events: none;
+  transition: color 0.15s;
+}
+.desc-counter.near { color: #b45309; }
+.desc-counter.over { color: var(--accent); font-weight: 700; }
+.desc-textarea.over-limit {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(139,0,0,0.08);
+}
+
+.project-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}

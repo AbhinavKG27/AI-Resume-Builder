@@ -1,0 +1,99 @@
+/* 📁 Location: src/components/SkillsSection.css  ← NEW FILE */
+
+.skills-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+}
+
+/* Header */
+.skills-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+}
+.skills-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* Suggest button */
+.btn-suggest {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+  border: 1px solid var(--border-2);
+  background: var(--surface);
+  color: var(--text-2);
+  transition: all 0.18s;
+  letter-spacing: 0.02em;
+}
+.btn-suggest:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.btn-suggest.loading {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+.btn-suggest.done {
+  border-color: rgba(22,163,74,0.3);
+  color: #16a34a;
+  background: rgba(22,163,74,0.06);
+}
+
+/* Spinner */
+.suggest-spinner {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid var(--border-2);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.suggest-check {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Category grid */
+.skills-categories {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+}
+
+.skill-category {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.skill-category-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  font-family: var(--font-mono);
+}
+.skill-count {
+  color: var(--accent);
+  font-size: 10px;
+}

@@ -28,7 +28,7 @@ export default function App() {
     clearAll:         resumeState.clearAll,
     setPersonal:      resumeState.setPersonal,
     setSummary:       resumeState.setSummary,
-    setSkills:        resumeState.setSkills,
+    setSkillCategory: resumeState.setSkillCategory,
     setLinks:         resumeState.setLinks,
     addEducation:     resumeState.addEducation,
     updateEducation:  resumeState.updateEducation,

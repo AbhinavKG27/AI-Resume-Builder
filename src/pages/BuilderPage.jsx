@@ -1,13 +1,13 @@
-// 📁 Location: src/pages/BuilderPage.jsx  ← MODIFIED (replace entire file)
-// Changes: TemplatePicker added, BulletGuidance wired into Experience + Projects,
-//          ATSScore now receives `resume` prop for improvements panel
+// 📁 Location: src/pages/BuilderPage.jsx  ← MODIFIED
 
 import { useState } from "react";
-import FormField from "../components/FormField";
-import ResumePreview from "../components/ResumePreview";
-import ATSScore from "../components/ATSScore";
-import TemplatePicker from "../components/TemplatePicker";
-import BulletGuidance from "../components/BulletGuidance";
+import FormField       from "../components/FormField";
+import ResumePreview   from "../components/ResumePreview";
+import ATSScore        from "../components/ATSScore";
+import TemplatePicker  from "../components/TemplatePicker";
+import BulletGuidance  from "../components/BulletGuidance";
+import SkillsSection   from "../components/SkillsSection";
+import ProjectsSection from "../components/ProjectsSection";
 import { useATSScore } from "../hooks/useATSScore";
 import "./BuilderPage.css";
 
@@ -44,27 +44,28 @@ function RemoveBtn({ onClick }) {
   );
 }
 
+const SECTIONS = [
+  { id: "personal",   label: "Personal"   },
+  { id: "summary",    label: "Summary"    },
+  { id: "experience", label: "Experience" },
+  { id: "education",  label: "Education"  },
+  { id: "projects",   label: "Projects"   },
+  { id: "skills",     label: "Skills"     },
+  { id: "links",      label: "Links"      },
+];
+
 export default function BuilderPage({ resume, handlers, template, setTemplate, nav }) {
   const {
     loadSample, clearAll,
-    setPersonal, setSummary, setSkills, setLinks,
-    addEducation, updateEducation, removeEducation,
+    setPersonal, setSummary, setLinks,
+    setSkillCategory,
+    addEducation,  updateEducation,  removeEducation,
     addExperience, updateExperience, removeExperience,
-    addProject, updateProject, removeProject,
+    addProject,    updateProject,    removeProject,
   } = handlers;
 
   const [activeSection, setActiveSection] = useState("personal");
   const { score, suggestions, breakdown } = useATSScore(resume);
-
-  const SECTIONS = [
-    { id: "personal",   label: "Personal"   },
-    { id: "summary",    label: "Summary"    },
-    { id: "experience", label: "Experience" },
-    { id: "education",  label: "Education"  },
-    { id: "projects",   label: "Projects"   },
-    { id: "skills",     label: "Skills"     },
-    { id: "links",      label: "Links"      },
-  ];
 
   return (
     <div className="builder-page">
@@ -99,10 +100,10 @@ export default function BuilderPage({ resume, handlers, template, setTemplate, n
           {activeSection === "personal" && (
             <FormSection title="Personal Info">
               <div className="grid-2">
-                <FormField label="Full Name"  value={resume.personal.name}     onChange={v => setPersonal("name", v)}     placeholder="Priya Nair" />
-                <FormField label="Email"      value={resume.personal.email}    onChange={v => setPersonal("email", v)}    placeholder="priya@email.com" type="email" />
-                <FormField label="Phone"      value={resume.personal.phone}    onChange={v => setPersonal("phone", v)}    placeholder="+91 98765 43210" />
-                <FormField label="Location"   value={resume.personal.location} onChange={v => setPersonal("location", v)} placeholder="Bengaluru, KA" />
+                <FormField label="Full Name" value={resume.personal.name}     onChange={v => setPersonal("name", v)}     placeholder="Priya Nair" />
+                <FormField label="Email"     value={resume.personal.email}    onChange={v => setPersonal("email", v)}    placeholder="priya@email.com" type="email" />
+                <FormField label="Phone"     value={resume.personal.phone}    onChange={v => setPersonal("phone", v)}    placeholder="+91 98765 43210" />
+                <FormField label="Location"  value={resume.personal.location} onChange={v => setPersonal("location", v)} placeholder="Bengaluru, KA" />
               </div>
             </FormSection>
           )}
@@ -149,7 +150,6 @@ export default function BuilderPage({ resume, handlers, template, setTemplate, n
                     placeholder="Led migration of checkout flow, reducing load time by 40%..."
                     hint="Tip: Numbers and percentages boost your ATS score."
                   />
-                  {/* Inline bullet guidance */}
                   <BulletGuidance text={exp.description} />
                 </div>
               ))}
@@ -179,54 +179,22 @@ export default function BuilderPage({ resume, handlers, template, setTemplate, n
             </FormSection>
           )}
 
-          {/* PROJECTS */}
+          {/* PROJECTS — new collapsible section */}
           {activeSection === "projects" && (
-            <FormSection title="Projects" action={<AddBtn label="Add Project" onClick={addProject} />}>
-              {resume.projects.length === 0 && (
-                <div className="empty-state">No projects added yet. Click "Add Project" to begin.</div>
-              )}
-              {resume.projects.map((proj, idx) => (
-                <div key={proj.id} className="entry-card">
-                  <div className="entry-card-header">
-                    <span className="entry-card-num">#{idx + 1}</span>
-                    <RemoveBtn onClick={() => removeProject(proj.id)} />
-                  </div>
-                  <div className="grid-2">
-                    <FormField label="Project Name" value={proj.name} onChange={v => updateProject(proj.id, "name", v)} placeholder="OpenResume" />
-                    <FormField label="Tech Stack"   value={proj.tech} onChange={v => updateProject(proj.id, "tech", v)} placeholder="Next.js, Supabase, Tailwind" />
-                    <FormField label="Link"         value={proj.link} onChange={v => updateProject(proj.id, "link", v)} placeholder="github.com/you/project" />
-                  </div>
-                  <FormField
-                    label="Description" type="textarea" rows={3}
-                    value={proj.description}
-                    onChange={v => updateProject(proj.id, "description", v)}
-                    placeholder="Built X using Y, resulting in Z% improvement..."
-                    hint="Tip: Mention numbers and outcomes for ATS points."
-                  />
-                  {/* Inline bullet guidance */}
-                  <BulletGuidance text={proj.description} />
-                </div>
-              ))}
-            </FormSection>
+            <ProjectsSection
+              projects={resume.projects}
+              addProject={addProject}
+              updateProject={updateProject}
+              removeProject={removeProject}
+            />
           )}
 
-          {/* SKILLS */}
+          {/* SKILLS — new grouped tag section */}
           {activeSection === "skills" && (
-            <FormSection title="Skills">
-              <FormField
-                label="Skills (comma-separated)"
-                type="textarea" rows={4}
-                value={resume.skills}
-                onChange={setSkills}
-                placeholder="React, TypeScript, Node.js, PostgreSQL, Docker, AWS, Figma, Redis..."
-                hint="Add 8+ skills for maximum ATS score."
-              />
-              <div className="word-count">
-                {resume.skills.trim()
-                  ? `${resume.skills.split(",").map(s => s.trim()).filter(Boolean).length} skills`
-                  : "0 skills"}
-              </div>
-            </FormSection>
+            <SkillsSection
+              skills={resume.skills}
+              setSkillCategory={setSkillCategory}
+            />
           )}
 
           {/* LINKS */}
