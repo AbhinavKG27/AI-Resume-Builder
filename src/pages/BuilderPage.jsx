@@ -1,10 +1,13 @@
 // 📁 Location: src/pages/BuilderPage.jsx  ← MODIFIED (replace entire file)
-// Changes: ATS score panel added to right column below live preview
+// Changes: TemplatePicker added, BulletGuidance wired into Experience + Projects,
+//          ATSScore now receives `resume` prop for improvements panel
 
 import { useState } from "react";
 import FormField from "../components/FormField";
 import ResumePreview from "../components/ResumePreview";
 import ATSScore from "../components/ATSScore";
+import TemplatePicker from "../components/TemplatePicker";
+import BulletGuidance from "../components/BulletGuidance";
 import { useATSScore } from "../hooks/useATSScore";
 import "./BuilderPage.css";
 
@@ -23,7 +26,9 @@ function FormSection({ title, children, action }) {
 function AddBtn({ label, onClick }) {
   return (
     <button className="btn-add" onClick={onClick}>
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
       {label}
     </button>
   );
@@ -32,12 +37,14 @@ function AddBtn({ label, onClick }) {
 function RemoveBtn({ onClick }) {
   return (
     <button className="btn-remove" onClick={onClick} title="Remove">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
     </button>
   );
 }
 
-export default function BuilderPage({ resume, handlers, nav }) {
+export default function BuilderPage({ resume, handlers, template, setTemplate, nav }) {
   const {
     loadSample, clearAll,
     setPersonal, setSummary, setSkills, setLinks,
@@ -88,17 +95,19 @@ export default function BuilderPage({ resume, handlers, nav }) {
 
         <div className="form-body">
 
+          {/* PERSONAL */}
           {activeSection === "personal" && (
             <FormSection title="Personal Info">
               <div className="grid-2">
-                <FormField label="Full Name"    value={resume.personal.name}     onChange={v => setPersonal("name", v)}     placeholder="Priya Nair" />
-                <FormField label="Email"        value={resume.personal.email}    onChange={v => setPersonal("email", v)}    placeholder="priya@email.com" type="email" />
-                <FormField label="Phone"        value={resume.personal.phone}    onChange={v => setPersonal("phone", v)}    placeholder="+91 98765 43210" />
-                <FormField label="Location"     value={resume.personal.location} onChange={v => setPersonal("location", v)} placeholder="Bengaluru, KA" />
+                <FormField label="Full Name"  value={resume.personal.name}     onChange={v => setPersonal("name", v)}     placeholder="Priya Nair" />
+                <FormField label="Email"      value={resume.personal.email}    onChange={v => setPersonal("email", v)}    placeholder="priya@email.com" type="email" />
+                <FormField label="Phone"      value={resume.personal.phone}    onChange={v => setPersonal("phone", v)}    placeholder="+91 98765 43210" />
+                <FormField label="Location"   value={resume.personal.location} onChange={v => setPersonal("location", v)} placeholder="Bengaluru, KA" />
               </div>
             </FormSection>
           )}
 
+          {/* SUMMARY */}
           {activeSection === "summary" && (
             <FormSection title="Professional Summary">
               <FormField
@@ -116,6 +125,7 @@ export default function BuilderPage({ resume, handlers, nav }) {
             </FormSection>
           )}
 
+          {/* EXPERIENCE */}
           {activeSection === "experience" && (
             <FormSection title="Work Experience" action={<AddBtn label="Add Role" onClick={addExperience} />}>
               {resume.experience.length === 0 && (
@@ -137,13 +147,16 @@ export default function BuilderPage({ resume, handlers, nav }) {
                     value={exp.description}
                     onChange={v => updateExperience(exp.id, "description", v)}
                     placeholder="Led migration of checkout flow, reducing load time by 40%..."
-                    hint="Include numbers and percentages for a higher ATS score."
+                    hint="Tip: Numbers and percentages boost your ATS score."
                   />
+                  {/* Inline bullet guidance */}
+                  <BulletGuidance text={exp.description} />
                 </div>
               ))}
             </FormSection>
           )}
 
+          {/* EDUCATION */}
           {activeSection === "education" && (
             <FormSection title="Education" action={<AddBtn label="Add Education" onClick={addEducation} />}>
               {resume.education.length === 0 && (
@@ -166,6 +179,7 @@ export default function BuilderPage({ resume, handlers, nav }) {
             </FormSection>
           )}
 
+          {/* PROJECTS */}
           {activeSection === "projects" && (
             <FormSection title="Projects" action={<AddBtn label="Add Project" onClick={addProject} />}>
               {resume.projects.length === 0 && (
@@ -187,13 +201,16 @@ export default function BuilderPage({ resume, handlers, nav }) {
                     value={proj.description}
                     onChange={v => updateProject(proj.id, "description", v)}
                     placeholder="Built X using Y, resulting in Z% improvement..."
-                    hint="Mention numbers and outcomes for ATS points."
+                    hint="Tip: Mention numbers and outcomes for ATS points."
                   />
+                  {/* Inline bullet guidance */}
+                  <BulletGuidance text={proj.description} />
                 </div>
               ))}
             </FormSection>
           )}
 
+          {/* SKILLS */}
           {activeSection === "skills" && (
             <FormSection title="Skills">
               <FormField
@@ -212,6 +229,7 @@ export default function BuilderPage({ resume, handlers, nav }) {
             </FormSection>
           )}
 
+          {/* LINKS */}
           {activeSection === "links" && (
             <FormSection title="Links">
               <FormField label="GitHub"   value={resume.links.github}   onChange={v => setLinks("github", v)}   placeholder="github.com/yourname" />
@@ -223,14 +241,14 @@ export default function BuilderPage({ resume, handlers, nav }) {
 
         <div className="builder-footer">
           <button className="btn btn-ghost btn-sm" onClick={() => nav("/")}>← Home</button>
-          <button className="btn btn-primary" onClick={() => nav("/preview")}>
-            Preview Resume →
-          </button>
+          <button className="btn btn-primary" onClick={() => nav("/preview")}>Preview Resume →</button>
         </div>
       </div>
 
-      {/* ── RIGHT: LIVE PREVIEW + ATS ── */}
+      {/* ── RIGHT: TEMPLATE + LIVE PREVIEW + ATS ── */}
       <div className="builder-right">
+        <TemplatePicker template={template} setTemplate={setTemplate} />
+
         <div className="preview-panel-header">
           <span className="label">Live Preview</span>
           <div className="preview-header-right">
@@ -242,12 +260,9 @@ export default function BuilderPage({ resume, handlers, nav }) {
         </div>
 
         <div className="builder-right-body">
-          {/* ATS Score — sticky at top */}
-          <ATSScore score={score} suggestions={suggestions} breakdown={breakdown} />
-
-          {/* Live resume preview */}
+          <ATSScore score={score} suggestions={suggestions} breakdown={breakdown} resume={resume} />
           <div className="preview-scaler">
-            <ResumePreview resume={resume} />
+            <ResumePreview resume={resume} template={template} />
           </div>
         </div>
       </div>

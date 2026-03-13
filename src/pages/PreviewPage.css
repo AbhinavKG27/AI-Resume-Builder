@@ -43,3 +43,25 @@
   border-radius: var(--radius-lg);
   overflow: hidden;
 }
+
+/* ── Layout precision additions ── */
+
+/* Ensure preview-paper has no overflow */
+.preview-paper {
+  overflow: hidden;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Ensure resume-doc text never overflows its container */
+.preview-paper .resume-doc {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* Toolbar layout fix: prevent overflow */
+.preview-toolbar {
+  flex-wrap: wrap;
+  min-height: 52px;
+  height: auto;
+}

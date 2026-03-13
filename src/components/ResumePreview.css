@@ -156,3 +156,163 @@
   line-height: 1.7;
 }
 .rv-empty strong { color: #999; }
+
+/* ══════════════════════════════════════════════════════════════════
+   PRINT STYLES
+   Applied when window.print() is called or user does Ctrl+P.
+   Hides all UI chrome. Renders only the resume document.
+   White background, no accents, clean margins, no cut-off sections.
+══════════════════════════════════════════════════════════════════ */
+@media print {
+
+  /* Hide everything on the page except the resume document */
+  body > * { display: none !important; }
+
+  /* Show only the resume doc wrapper */
+  .print-root,
+  .print-root * { display: revert !important; }
+
+  /* Reset page */
+  @page {
+    size: A4 portrait;
+    margin: 16mm 18mm;
+  }
+
+  .resume-doc {
+    /* Remove screen-specific chrome */
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    border-left: none !important;
+
+    /* Full page width */
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+
+    /* Typography */
+    font-size: 11pt !important;
+    line-height: 1.5 !important;
+    color: #000 !important;
+    background: #fff !important;
+    font-family: 'DM Sans', Arial, sans-serif !important;
+  }
+
+  /* Name */
+  .rv-name {
+    font-size: 22pt !important;
+    color: #000 !important;
+    margin-bottom: 6pt !important;
+  }
+
+  /* Contact */
+  .rv-contact {
+    font-size: 9pt !important;
+    color: #333 !important;
+  }
+  .rv-contact-item::after { color: #999 !important; }
+
+  /* Rule — keep the strong top line */
+  .rv-rule {
+    border-top: 1.5pt solid #000 !important;
+    margin: 10pt 0 14pt !important;
+  }
+
+  /* Section titles */
+  .rv-section-title {
+    font-size: 8pt !important;
+    letter-spacing: 0.14em !important;
+    color: #000 !important;
+    border-bottom: 0.5pt solid #ccc !important;
+    border-left: none !important;
+    padding-bottom: 3pt !important;
+    margin-bottom: 8pt !important;
+    padding-left: 0 !important;
+  }
+
+  /* Sections */
+  .rv-section {
+    margin-bottom: 14pt !important;
+    /* Avoid orphaned section headers */
+    break-inside: avoid-page;
+  }
+
+  /* Entries — avoid splitting bullets across pages */
+  .rv-entry {
+    break-inside: avoid-page;
+    margin-bottom: 9pt !important;
+    padding-bottom: 9pt !important;
+    border-bottom: 0.25pt solid #eee !important;
+  }
+  .rv-entry:last-child {
+    border-bottom: none !important;
+  }
+
+  /* Entry typography */
+  .rv-entry-title   { font-size: 10.5pt !important; color: #000 !important; }
+  .rv-entry-company { font-size: 9.5pt  !important; color: #333 !important; }
+  .rv-entry-date    { font-size: 9pt    !important; color: #555 !important; }
+  .rv-entry-grade   { font-size: 9pt    !important; color: #555 !important; }
+  .rv-entry-tech    { font-size: 9pt    !important; color: #555 !important; }
+  .rv-body          { font-size: 10pt   !important; color: #222 !important; }
+
+  /* Skills */
+  .rv-skills { gap: 4pt !important; }
+  .rv-skill {
+    font-size: 9pt !important;
+    padding: 2pt 7pt !important;
+    border: 0.5pt solid #ccc !important;
+    background: transparent !important;
+    color: #222 !important;
+  }
+
+  /* Modern template — remove left accent bar in print */
+  [data-template="modern"] .resume-doc {
+    border-left: none !important;
+    padding-left: 0 !important;
+  }
+  [data-template="modern"] .rv-section-title {
+    border-left: none !important;
+    padding-left: 0 !important;
+  }
+
+  /* Hide empty state placeholder */
+  .rv-empty { display: none !important; }
+}
+
+/* ── Layout precision / overflow guards (screen) ── */
+
+.resume-doc {
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.rv-entry-top {
+  min-width: 0;
+}
+.rv-entry-left {
+  min-width: 0;
+  overflow: hidden;
+}
+.rv-entry-title,
+.rv-entry-company,
+.rv-entry-tech {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+/* Allow date/link to truncate gracefully */
+.rv-entry-date {
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Skills — consistent wrap */
+.rv-skills {
+  row-gap: 5px;
+}

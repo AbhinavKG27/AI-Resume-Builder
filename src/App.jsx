@@ -1,5 +1,10 @@
+// 📁 Location: src/App.jsx  ← MODIFIED (replace entire file)
+// Changes: imports useTemplateState, passes template + setTemplate to Builder + Preview
+// Also imports templates.css for global template overrides
+
 import { useState, useCallback } from "react";
-import { useResumeState } from "./hooks/useResumeState";
+import { useResumeState }   from "./hooks/useResumeState";
+import { useTemplateState } from "./hooks/useTemplateState";
 
 import TopNav      from "./components/TopNav";
 import HomePage    from "./pages/HomePage";
@@ -8,16 +13,16 @@ import PreviewPage from "./pages/PreviewPage";
 import ProofPage   from "./pages/ProofPage";
 
 import "./styles/global.css";
+import "./styles/templates.css";
 
 export default function App() {
   const [route, setRoute] = useState("/");
   const nav = useCallback((r) => { setRoute(r); window.scrollTo(0, 0); }, []);
 
-  // All resume state lives here and is passed down
-  const resumeState = useResumeState();
-  const { resume } = resumeState;
+  const resumeState  = useResumeState();
+  const { template, setTemplate } = useTemplateState();
+  const { resume }   = resumeState;
 
-  // Bundle all mutation handlers for BuilderPage
   const handlers = {
     loadSample:       resumeState.loadSample,
     clearAll:         resumeState.clearAll,
@@ -36,17 +41,29 @@ export default function App() {
     removeProject:    resumeState.removeProject,
   };
 
-  // Hide topnav on home (it has its own CTA bar)
-  const showNav = true;
-
   return (
     <>
-      {showNav && <TopNav route={route} nav={nav} />}
+      <TopNav route={route} nav={nav} />
 
-      {route === "/"         && <HomePage    nav={nav} />}
-      {route === "/builder"  && <BuilderPage resume={resume} handlers={handlers} nav={nav} />}
-      {route === "/preview"  && <PreviewPage resume={resume} nav={nav} />}
-      {route === "/proof"    && <ProofPage   nav={nav} />}
+      {route === "/"        && <HomePage    nav={nav} />}
+      {route === "/builder" && (
+        <BuilderPage
+          resume={resume}
+          handlers={handlers}
+          template={template}
+          setTemplate={setTemplate}
+          nav={nav}
+        />
+      )}
+      {route === "/preview" && (
+        <PreviewPage
+          resume={resume}
+          template={template}
+          setTemplate={setTemplate}
+          nav={nav}
+        />
+      )}
+      {route === "/proof"   && <ProofPage nav={nav} />}
     </>
   );
 }

@@ -1,0 +1,144 @@
+/* 📁 Location: src/styles/templates.css  ← NEW FILE
+   Template-specific overrides applied via data-template attribute.
+   Base styles live in ResumePreview.css — these only override layout/spacing/font.
+   Content, scoring, and logic are completely unaffected.
+*/
+
+/* ══════════════════════════════════════════════════════
+   CLASSIC  — Playfair Display headings, generous margins
+   Traditional, safe for finance, law, consulting, govt.
+══════════════════════════════════════════════════════ */
+[data-template="classic"] .resume-doc {
+  padding: 52px 56px;
+  font-family: 'DM Sans', sans-serif;
+}
+[data-template="classic"] .rv-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+[data-template="classic"] .rv-rule {
+  border-top-width: 2px;
+  border-color: #111;
+  margin: 14px 0 20px;
+}
+[data-template="classic"] .rv-section-title {
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 4px;
+  margin-bottom: 12px;
+  font-family: 'DM Sans', sans-serif;
+}
+[data-template="classic"] .rv-entry {
+  margin-bottom: 13px;
+  padding-bottom: 13px;
+}
+
+/* ══════════════════════════════════════════════════════
+   MODERN  — DM Sans throughout, left accent rule,
+   tighter spacing, section titles in accent color
+   Good for tech, startups, product, design.
+══════════════════════════════════════════════════════ */
+[data-template="modern"] .resume-doc {
+  padding: 40px 48px 40px 56px;
+  border-left: 4px solid #111;
+  font-family: 'DM Sans', sans-serif;
+}
+[data-template="modern"] .rv-name {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+[data-template="modern"] .rv-rule {
+  border-top: 1px solid #e0e0e0;
+  margin: 10px 0 16px;
+}
+[data-template="modern"] .rv-section-title {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  border-bottom: none;
+  border-left: 3px solid #111;
+  padding-left: 8px;
+  padding-bottom: 0;
+  margin-bottom: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+}
+[data-template="modern"] .rv-entry-title {
+  font-size: 13px;
+  font-weight: 700;
+}
+[data-template="modern"] .rv-entry {
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f5f5f5;
+}
+[data-template="modern"] .rv-skill {
+  border-radius: 2px;
+  background: #f5f5f5;
+  border: none;
+  font-size: 11px;
+}
+
+/* ══════════════════════════════════════════════════════
+   MINIMAL  — Maximum whitespace, no borders/dividers,
+   ultra-clean. Good for creative, design, writing roles.
+══════════════════════════════════════════════════════ */
+[data-template="minimal"] .resume-doc {
+  padding: 64px 64px;
+  font-family: 'DM Sans', sans-serif;
+  border: none;
+  box-shadow: none;
+}
+[data-template="minimal"] .rv-name {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+[data-template="minimal"] .rv-rule {
+  border-top: 1px solid #ddd;
+  margin: 16px 0 24px;
+}
+[data-template="minimal"] .rv-contact {
+  gap: 2px 0;
+  font-size: 11.5px;
+  color: #777;
+}
+[data-template="minimal"] .rv-section-title {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: #999;
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 14px;
+  font-weight: 600;
+}
+[data-template="minimal"] .rv-entry {
+  margin-bottom: 14px;
+  padding-bottom: 14px;
+  border-bottom: none;
+}
+[data-template="minimal"] .rv-entry-title {
+  font-weight: 500;
+}
+[data-template="minimal"] .rv-entry-company {
+  color: #888;
+}
+[data-template="minimal"] .rv-entry-date {
+  color: #aaa;
+}
+[data-template="minimal"] .rv-skill {
+  border: 1px solid #eee;
+  background: transparent;
+  color: #555;
+  font-size: 11px;
+}
+[data-template="minimal"] .rv-body {
+  color: #444;
+  font-size: 12.5px;
+}

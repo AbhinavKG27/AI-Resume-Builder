@@ -1,0 +1,72 @@
+/* 📁 Location: src/components/TemplatePicker.css  ← NEW FILE */
+
+.template-picker {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  padding: var(--s2) var(--s3);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.template-picker-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  font-family: var(--font-mono);
+  flex-shrink: 0;
+}
+
+.template-tabs {
+  display: flex;
+  gap: 6px;
+}
+
+.template-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg);
+  cursor: pointer;
+  transition: all 0.18s;
+  min-width: 64px;
+}
+.template-tab:hover {
+  border-color: var(--border-2);
+  background: var(--bg-alt);
+}
+.template-tab.active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.template-tab-preview {
+  width: 36px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.template-tab-preview svg {
+  width: 36px;
+  height: 44px;
+  display: block;
+}
+
+.template-tab-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-3);
+  letter-spacing: 0.04em;
+  font-family: var(--font-mono);
+  transition: color 0.15s;
+}
+.template-tab.active .template-tab-name {
+  color: var(--accent);
+}

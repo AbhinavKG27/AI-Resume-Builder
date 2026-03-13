@@ -1,0 +1,104 @@
+/* 📁 Location: src/components/ExportBar.css  ← NEW FILE */
+
+.export-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ── Warning banner ── */
+.export-warning {
+  background: #fffbeb;
+  border-bottom: 1px solid #fde68a;
+  padding: 10px var(--s4);
+  animation: slideDown 0.2s ease;
+}
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.export-warning-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.export-warning-icon {
+  font-size: 14px;
+  color: #b45309;
+  flex-shrink: 0;
+  line-height: 1.5;
+}
+.export-warning-body {
+  flex: 1;
+}
+.export-warning-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #92400e;
+  display: block;
+  margin-bottom: 3px;
+}
+.export-warning-list {
+  margin: 0;
+  padding-left: 16px;
+  font-size: 12px;
+  color: #a16207;
+  line-height: 1.6;
+}
+.export-warning-dismiss {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  color: #b45309;
+  padding: 2px 4px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  line-height: 1;
+  transition: background 0.15s;
+}
+.export-warning-dismiss:hover { background: #fde68a; }
+
+/* ── Action row ── */
+.export-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--s2) var(--s4);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  gap: var(--s2);
+}
+.export-actions-left { display: flex; align-items: center; }
+.export-actions-right { display: flex; align-items: center; gap: var(--s2); }
+
+.export-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  font-family: var(--font-mono);
+}
+
+.export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  padding: 8px 16px;
+  transition: all 0.18s;
+}
+.export-btn.copied {
+  background: rgba(22,163,74,0.08);
+  border-color: rgba(22,163,74,0.3);
+  color: #16a34a;
+}
+.export-btn.error {
+  background: rgba(220,38,38,0.08);
+  border-color: rgba(220,38,38,0.25);
+  color: #dc2626;
+}
