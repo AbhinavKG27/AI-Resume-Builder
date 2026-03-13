@@ -1,70 +1,98 @@
-/* 📁 Location: src/components/ATSScore.css  ← NEW FILE */
+/* 📁 Location: src/components/ATSScore.css  ← REPLACED */
 
+/* ── Base panel ── */
 .ats-panel {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: var(--s3);
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: var(--s2);
+  gap: 14px;
 }
 
-/* Header */
+/* ── Full variant (on /preview) ── */
+.ats-variant-full {
+  padding: 28px 32px;
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  border-bottom: 1px solid var(--border);
+  gap: 20px;
+}
+
+/* ── Header ── */
 .ats-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--s1);
 }
 .ats-title {
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--text-3);
   font-family: var(--font-mono);
 }
-.ats-tier-badge {
+.ats-badge {
   font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  padding: 3px 8px;
+  padding: 3px 10px;
   border-radius: 20px;
   font-family: var(--font-mono);
 }
-.tier-strong { background: rgba(22,163,74,0.1);   color: #16a34a; border: 1px solid rgba(22,163,74,0.2);  }
-.tier-good   { background: rgba(180,83,9,0.1);    color: #b45309; border: 1px solid rgba(180,83,9,0.2);   }
-.tier-fair   { background: rgba(139,0,0,0.08);    color: var(--accent); border: 1px solid rgba(139,0,0,0.2); }
-.tier-weak   { background: var(--bg-alt);         color: var(--text-3); border: 1px solid var(--border);  }
+.tier-green { background: rgba(22,163,74,.1);  color: #16a34a; border: 1px solid rgba(22,163,74,.25); }
+.tier-amber { background: rgba(217,119,6,.1);  color: #d97706; border: 1px solid rgba(217,119,6,.25); }
+.tier-red   { background: rgba(220,38,38,.1);  color: #dc2626; border: 1px solid rgba(220,38,38,.25); }
 
-/* Meter row */
-.ats-meter-row {
+/* ── Body: ring + bars ── */
+.ats-body {
   display: flex;
   align-items: center;
-  gap: var(--s3);
+  gap: 20px;
 }
 
-/* SVG ring */
-.ats-ring-wrap { flex-shrink: 0; width: 80px; height: 80px; }
-.ats-ring { width: 80px; height: 80px; transform: rotate(-90deg); }
-.ats-ring-fill {
-  transition: stroke-dasharray 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-              stroke 0.4s ease;
+/* Ring */
+.ats-ring-wrap {
+  position: relative;
+  flex-shrink: 0;
 }
-.ats-ring-label {
+.ats-ring-progress {
+  transition: stroke-dasharray 0.65s cubic-bezier(.4,0,.2,1), stroke .35s;
+}
+.ats-ring-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.ats-score-num {
   font-family: var(--font-mono);
-  font-size: 18px;
-  font-weight: 700;
-  /* counter-rotate the text so it reads normally */
-  transform: rotate(90deg);
-  transform-origin: 40px 40px;
+  font-weight: 800;
+  line-height: 1;
+  transition: color .35s;
+}
+.ats-variant-compact .ats-score-num { font-size: 22px; }
+.ats-variant-full    .ats-score-num { font-size: 30px; }
+
+.ats-score-denom {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-3);
+  margin-top: 1px;
 }
 
-/* Breakdown bars */
-.ats-breakdown {
+/* Bars */
+.ats-bars {
   flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -78,12 +106,9 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--border-2);
   flex-shrink: 0;
-  transition: background 0.3s;
+  transition: background .3s;
 }
-.ats-bar-dot.passed { background: #16a34a; }
-
 .ats-bar-track {
   flex: 1;
   height: 3px;
@@ -94,85 +119,35 @@
 .ats-bar-fill {
   height: 100%;
   border-radius: 2px;
-  background: var(--border-2);
-  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width .55s cubic-bezier(.4,0,.2,1), background .35s;
 }
-.ats-bar-fill.passed { background: #16a34a; }
-
 .ats-bar-pts {
   font-size: 10px;
   font-family: var(--font-mono);
-  color: var(--text-3);
-  width: 24px;
+  width: 26px;
   text-align: right;
   flex-shrink: 0;
+  transition: color .35s;
 }
 
-/* Suggestions */
+/* ── Suggestions ── */
 .ats-suggestions {
   border-top: 1px solid var(--border);
-  padding-top: var(--s2);
+  padding-top: 14px;
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 6px;
 }
-.ats-suggestions-label {
+.ats-suggestions-title {
   font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: .08em;
   text-transform: uppercase;
   color: var(--text-3);
   font-family: var(--font-mono);
   margin-bottom: 2px;
 }
-.ats-suggestion-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 7px;
-}
-.ats-suggestion-icon {
-  color: var(--accent);
-  font-size: 12px;
-  font-weight: 700;
-  flex-shrink: 0;
-  line-height: 1.5;
-}
-.ats-suggestion-text {
-  font-size: 12px;
-  color: var(--text-2);
-  line-height: 1.5;
-}
-
-/* Perfect score */
-.ats-perfect {
-  font-size: 12px;
-  font-weight: 600;
-  color: #16a34a;
-  text-align: center;
-  padding: var(--s1);
-  background: rgba(22,163,74,0.06);
-  border-radius: var(--radius);
-  font-family: var(--font-mono);
-}
-
-/* ── Top 3 Improvements panel (appended) ── */
-.ats-improvements {
-  border-top: 1px solid var(--border);
-  padding-top: var(--s2);
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-}
-.ats-improvements-label {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-3);
-  font-family: var(--font-mono);
-  margin-bottom: 2px;
-}
-.ats-improvement-row {
+.ats-suggestion {
   display: flex;
   align-items: flex-start;
   gap: 8px;
@@ -180,13 +155,16 @@
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: var(--radius);
+  transition: border-color .15s;
 }
-.ats-improvement-num {
+.ats-suggestion:hover { border-color: var(--border-2); }
+
+.ats-suggestion-num {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: var(--accent-soft);
-  color: var(--accent);
+  background: var(--bg-alt);
+  color: var(--text-3);
   font-size: 10px;
   font-weight: 700;
   font-family: var(--font-mono);
@@ -194,10 +172,23 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  border: 1px solid rgba(139,0,0,0.15);
+  border: 1px solid var(--border-2);
 }
-.ats-improvement-text {
+.ats-suggestion-text {
   font-size: 12px;
   color: var(--text-2);
   line-height: 1.5;
+}
+.ats-variant-full .ats-suggestion-text { font-size: 13px; }
+
+/* ── Perfect ── */
+.ats-perfect {
+  font-size: 12px;
+  font-weight: 600;
+  color: #16a34a;
+  text-align: center;
+  padding: 8px;
+  background: rgba(22,163,74,.06);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
 }

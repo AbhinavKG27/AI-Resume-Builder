@@ -242,3 +242,43 @@
 
 /* Override old preview-panel-body / preview-scaler if present */
 .preview-panel-body { display: none; }
+
+/* ════════════════════════════════════════════════
+   MOBILE RESPONSIVE — stacked layout ≤ 900px
+════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .builder-page {
+    flex-direction: column;
+    height: auto;
+    overflow: visible;
+  }
+  .builder-left {
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    overflow: visible;
+  }
+  .form-body {
+    max-height: 60vh;
+  }
+  .builder-right {
+    height: auto;
+    overflow: visible;
+  }
+  .builder-right-body {
+    overflow: visible;
+  }
+}
+
+@media (max-width: 600px) {
+  .builder-toolbar  { flex-wrap: wrap; gap: 8px; }
+  .toolbar-actions  { width: 100%; justify-content: flex-end; }
+  .section-tabs     { padding: 6px 8px; }
+  .section-tab      { padding: 4px 10px; font-size: 11px; }
+  .form-body        { padding: var(--s2); max-height: 50vh; }
+  .builder-footer   { flex-wrap: wrap; gap: 8px; padding: var(--s2); }
+  .builder-footer .btn { flex: 1; justify-content: center; }
+  .preview-panel-header { padding: var(--s2); }
+  .builder-right-body   { padding: var(--s2); }
+}
