@@ -1,0 +1,156 @@
+/* 📁 Location: src/components/ATSScore.css  ← NEW FILE */
+
+.ats-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--s3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+
+/* Header */
+.ats-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s1);
+}
+.ats-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  font-family: var(--font-mono);
+}
+.ats-tier-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-family: var(--font-mono);
+}
+.tier-strong { background: rgba(22,163,74,0.1);   color: #16a34a; border: 1px solid rgba(22,163,74,0.2);  }
+.tier-good   { background: rgba(180,83,9,0.1);    color: #b45309; border: 1px solid rgba(180,83,9,0.2);   }
+.tier-fair   { background: rgba(139,0,0,0.08);    color: var(--accent); border: 1px solid rgba(139,0,0,0.2); }
+.tier-weak   { background: var(--bg-alt);         color: var(--text-3); border: 1px solid var(--border);  }
+
+/* Meter row */
+.ats-meter-row {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+}
+
+/* SVG ring */
+.ats-ring-wrap { flex-shrink: 0; width: 80px; height: 80px; }
+.ats-ring { width: 80px; height: 80px; transform: rotate(-90deg); }
+.ats-ring-fill {
+  transition: stroke-dasharray 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              stroke 0.4s ease;
+}
+.ats-ring-label {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 700;
+  /* counter-rotate the text so it reads normally */
+  transform: rotate(90deg);
+  transform-origin: 40px 40px;
+}
+
+/* Breakdown bars */
+.ats-breakdown {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.ats-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ats-bar-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--border-2);
+  flex-shrink: 0;
+  transition: background 0.3s;
+}
+.ats-bar-dot.passed { background: #16a34a; }
+
+.ats-bar-track {
+  flex: 1;
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.ats-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: var(--border-2);
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.ats-bar-fill.passed { background: #16a34a; }
+
+.ats-bar-pts {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--text-3);
+  width: 24px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* Suggestions */
+.ats-suggestions {
+  border-top: 1px solid var(--border);
+  padding-top: var(--s2);
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.ats-suggestions-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  font-family: var(--font-mono);
+  margin-bottom: 2px;
+}
+.ats-suggestion-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+}
+.ats-suggestion-icon {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+  line-height: 1.5;
+}
+.ats-suggestion-text {
+  font-size: 12px;
+  color: var(--text-2);
+  line-height: 1.5;
+}
+
+/* Perfect score */
+.ats-perfect {
+  font-size: 12px;
+  font-weight: 600;
+  color: #16a34a;
+  text-align: center;
+  padding: var(--s1);
+  background: rgba(22,163,74,0.06);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+}

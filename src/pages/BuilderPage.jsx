@@ -1,9 +1,13 @@
+// 📁 Location: src/pages/BuilderPage.jsx  ← MODIFIED (replace entire file)
+// Changes: ATS score panel added to right column below live preview
+
 import { useState } from "react";
 import FormField from "../components/FormField";
 import ResumePreview from "../components/ResumePreview";
+import ATSScore from "../components/ATSScore";
+import { useATSScore } from "../hooks/useATSScore";
 import "./BuilderPage.css";
 
-// ── Small section wrapper ────────────────────────────────────────────────────
 function FormSection({ title, children, action }) {
   return (
     <div className="form-section">
@@ -33,7 +37,6 @@ function RemoveBtn({ onClick }) {
   );
 }
 
-// ── Main page ────────────────────────────────────────────────────────────────
 export default function BuilderPage({ resume, handlers, nav }) {
   const {
     loadSample, clearAll,
@@ -44,15 +47,16 @@ export default function BuilderPage({ resume, handlers, nav }) {
   } = handlers;
 
   const [activeSection, setActiveSection] = useState("personal");
+  const { score, suggestions, breakdown } = useATSScore(resume);
 
   const SECTIONS = [
-    { id: "personal",    label: "Personal"    },
-    { id: "summary",     label: "Summary"     },
-    { id: "experience",  label: "Experience"  },
-    { id: "education",   label: "Education"   },
-    { id: "projects",    label: "Projects"    },
-    { id: "skills",      label: "Skills"      },
-    { id: "links",       label: "Links"       },
+    { id: "personal",   label: "Personal"   },
+    { id: "summary",    label: "Summary"    },
+    { id: "experience", label: "Experience" },
+    { id: "education",  label: "Education"  },
+    { id: "projects",   label: "Projects"   },
+    { id: "skills",     label: "Skills"     },
+    { id: "links",      label: "Links"      },
   ];
 
   return (
@@ -60,8 +64,6 @@ export default function BuilderPage({ resume, handlers, nav }) {
 
       {/* ── LEFT: FORM ── */}
       <div className="builder-left">
-
-        {/* Toolbar */}
         <div className="builder-toolbar">
           <h2 className="builder-title">Resume Builder</h2>
           <div className="toolbar-actions">
@@ -72,7 +74,6 @@ export default function BuilderPage({ resume, handlers, nav }) {
           </div>
         </div>
 
-        {/* Section tabs */}
         <div className="section-tabs">
           {SECTIONS.map(s => (
             <button
@@ -85,10 +86,8 @@ export default function BuilderPage({ resume, handlers, nav }) {
           ))}
         </div>
 
-        {/* Form body */}
         <div className="form-body">
 
-          {/* Personal Info */}
           {activeSection === "personal" && (
             <FormSection title="Personal Info">
               <div className="grid-2">
@@ -100,26 +99,25 @@ export default function BuilderPage({ resume, handlers, nav }) {
             </FormSection>
           )}
 
-          {/* Summary */}
           {activeSection === "summary" && (
             <FormSection title="Professional Summary">
               <FormField
-                type="textarea"
-                rows={6}
+                type="textarea" rows={6}
                 value={resume.summary}
                 onChange={setSummary}
                 placeholder="Write 2–4 sentences summarising your experience, strengths, and what you're looking for..."
-                hint="Tip: Keep it under 80 words. Lead with your strongest attribute."
+                hint="Target: 40–120 words for best ATS score."
               />
+              <div className="word-count">
+                {resume.summary.trim()
+                  ? `${resume.summary.trim().split(/\s+/).filter(Boolean).length} words`
+                  : "0 words"}
+              </div>
             </FormSection>
           )}
 
-          {/* Experience */}
           {activeSection === "experience" && (
-            <FormSection
-              title="Work Experience"
-              action={<AddBtn label="Add Role" onClick={addExperience} />}
-            >
+            <FormSection title="Work Experience" action={<AddBtn label="Add Role" onClick={addExperience} />}>
               {resume.experience.length === 0 && (
                 <div className="empty-state">No experience added yet. Click "Add Role" to begin.</div>
               )}
@@ -138,19 +136,16 @@ export default function BuilderPage({ resume, handlers, nav }) {
                     label="Description" type="textarea" rows={4}
                     value={exp.description}
                     onChange={v => updateExperience(exp.id, "description", v)}
-                    placeholder="Describe your key responsibilities and impact..."
+                    placeholder="Led migration of checkout flow, reducing load time by 40%..."
+                    hint="Include numbers and percentages for a higher ATS score."
                   />
                 </div>
               ))}
             </FormSection>
           )}
 
-          {/* Education */}
           {activeSection === "education" && (
-            <FormSection
-              title="Education"
-              action={<AddBtn label="Add Education" onClick={addEducation} />}
-            >
+            <FormSection title="Education" action={<AddBtn label="Add Education" onClick={addEducation} />}>
               {resume.education.length === 0 && (
                 <div className="empty-state">No education added yet. Click "Add Education" to begin.</div>
               )}
@@ -171,12 +166,8 @@ export default function BuilderPage({ resume, handlers, nav }) {
             </FormSection>
           )}
 
-          {/* Projects */}
           {activeSection === "projects" && (
-            <FormSection
-              title="Projects"
-              action={<AddBtn label="Add Project" onClick={addProject} />}
-            >
+            <FormSection title="Projects" action={<AddBtn label="Add Project" onClick={addProject} />}>
               {resume.projects.length === 0 && (
                 <div className="empty-state">No projects added yet. Click "Add Project" to begin.</div>
               )}
@@ -195,29 +186,32 @@ export default function BuilderPage({ resume, handlers, nav }) {
                     label="Description" type="textarea" rows={3}
                     value={proj.description}
                     onChange={v => updateProject(proj.id, "description", v)}
-                    placeholder="What did you build, what problem did it solve, what was the outcome?"
+                    placeholder="Built X using Y, resulting in Z% improvement..."
+                    hint="Mention numbers and outcomes for ATS points."
                   />
                 </div>
               ))}
             </FormSection>
           )}
 
-          {/* Skills */}
           {activeSection === "skills" && (
             <FormSection title="Skills">
               <FormField
                 label="Skills (comma-separated)"
-                type="textarea"
-                rows={4}
+                type="textarea" rows={4}
                 value={resume.skills}
                 onChange={setSkills}
-                placeholder="React, TypeScript, Node.js, PostgreSQL, Docker, AWS..."
-                hint="Separate each skill with a comma. Most important skills first."
+                placeholder="React, TypeScript, Node.js, PostgreSQL, Docker, AWS, Figma, Redis..."
+                hint="Add 8+ skills for maximum ATS score."
               />
+              <div className="word-count">
+                {resume.skills.trim()
+                  ? `${resume.skills.split(",").map(s => s.trim()).filter(Boolean).length} skills`
+                  : "0 skills"}
+              </div>
             </FormSection>
           )}
 
-          {/* Links */}
           {activeSection === "links" && (
             <FormSection title="Links">
               <FormField label="GitHub"   value={resume.links.github}   onChange={v => setLinks("github", v)}   placeholder="github.com/yourname" />
@@ -227,30 +221,33 @@ export default function BuilderPage({ resume, handlers, nav }) {
 
         </div>
 
-        {/* Footer actions */}
         <div className="builder-footer">
-          <button className="btn btn-ghost btn-sm" onClick={() => nav("/")}>
-            ← Home
-          </button>
+          <button className="btn btn-ghost btn-sm" onClick={() => nav("/")}>← Home</button>
           <button className="btn btn-primary" onClick={() => nav("/preview")}>
             Preview Resume →
           </button>
         </div>
       </div>
 
-      {/* ── RIGHT: LIVE PREVIEW ── */}
+      {/* ── RIGHT: LIVE PREVIEW + ATS ── */}
       <div className="builder-right">
-        <div className="preview-panel">
-          <div className="preview-panel-header">
-            <span className="label">Live Preview</span>
+        <div className="preview-panel-header">
+          <span className="label">Live Preview</span>
+          <div className="preview-header-right">
+            <span className="autosave-badge">● Autosaved</span>
             <button className="btn btn-ghost btn-sm" onClick={() => nav("/preview")}>
               Full Preview →
             </button>
           </div>
-          <div className="preview-panel-body">
-            <div className="preview-scaler">
-              <ResumePreview resume={resume} />
-            </div>
+        </div>
+
+        <div className="builder-right-body">
+          {/* ATS Score — sticky at top */}
+          <ATSScore score={score} suggestions={suggestions} breakdown={breakdown} />
+
+          {/* Live resume preview */}
+          <div className="preview-scaler">
+            <ResumePreview resume={resume} />
           </div>
         </div>
       </div>

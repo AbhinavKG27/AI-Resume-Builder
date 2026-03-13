@@ -1,112 +1,142 @@
+// 📁 Location: src/components/ResumePreview.jsx  ← MODIFIED (replace entire file)
+// Changes: real content rendering, empty section hiding, typography polish
+
 import "./ResumePreview.css";
 
-export default function ResumePreview({ resume, scale = 1 }) {
+export default function ResumePreview({ resume }) {
   const { personal, summary, education, experience, projects, skills, links } = resume;
-  const hasName = personal?.name?.trim();
+
+  const hasPersonal   = personal?.name?.trim();
+  const hasSummary    = summary?.trim();
+  const hasEducation  = education?.length > 0;
+  const hasExperience = experience?.length > 0;
+  const hasProjects   = projects?.length > 0;
+  const skillList     = skills?.split(",").map(s => s.trim()).filter(Boolean) ?? [];
+  const hasSkills     = skillList.length > 0;
+  const hasLinks      = links?.github?.trim() || links?.linkedin?.trim();
+
+  const contactItems = [
+    personal?.email,
+    personal?.phone,
+    personal?.location,
+    links?.github    ? links.github    : null,
+    links?.linkedin  ? links.linkedin  : null,
+  ].filter(Boolean);
 
   return (
-    <div className="resume-shell" style={{ transform: `scale(${scale})`, transformOrigin: "top left" }}>
-      <div className="resume-doc">
+    <div className="resume-doc">
 
-        <div className="rv-header">
-          {hasName
-            ? <h1 className="rv-name">{personal.name}</h1>
-            : <h1 className="rv-name rv-placeholder">Your Name</h1>
-          }
+      {/* ── NAME + CONTACT ── */}
+      <div className="rv-header">
+        <h1 className="rv-name">
+          {hasPersonal ? personal.name : <span className="rv-ghost">Your Name</span>}
+        </h1>
+        {contactItems.length > 0 && (
           <div className="rv-contact">
-            {personal?.email    && <span>{personal.email}</span>}
-            {personal?.phone    && <span>{personal.phone}</span>}
-            {personal?.location && <span>{personal.location}</span>}
-            {links?.github      && <span>{links.github}</span>}
-            {links?.linkedin    && <span>{links.linkedin}</span>}
-          </div>
-        </div>
-
-        <div className="rv-divider" />
-
-        {summary ? (
-          <div className="rv-section">
-            <h2 className="rv-section-title">Summary</h2>
-            <p className="rv-body">{summary}</p>
-          </div>
-        ) : (
-          <div className="rv-section rv-empty-section">
-            <h2 className="rv-section-title">Summary</h2>
-            <p className="rv-placeholder-text">Your professional summary will appear here.</p>
-          </div>
-        )}
-
-        <div className="rv-section">
-          <h2 className="rv-section-title">Experience</h2>
-          {experience?.length > 0 ? experience.map(exp => (
-            <div key={exp.id} className="rv-entry">
-              <div className="rv-entry-header">
-                <div>
-                  <div className="rv-entry-title">{exp.role || "Role"}</div>
-                  <div className="rv-entry-sub">{exp.company || "Company"}</div>
-                </div>
-                <div className="rv-entry-date">{exp.duration}</div>
-              </div>
-              {exp.description && <p className="rv-body rv-entry-desc">{exp.description}</p>}
-            </div>
-          )) : <PlaceholderLines count={3} />}
-        </div>
-
-        <div className="rv-section">
-          <h2 className="rv-section-title">Education</h2>
-          {education?.length > 0 ? education.map(edu => (
-            <div key={edu.id} className="rv-entry">
-              <div className="rv-entry-header">
-                <div>
-                  <div className="rv-entry-title">{edu.degree || "Degree"}</div>
-                  <div className="rv-entry-sub">{edu.institution || "Institution"}</div>
-                </div>
-                <div className="rv-entry-date">{edu.year}{edu.grade ? ` · ${edu.grade}` : ""}</div>
-              </div>
-            </div>
-          )) : <PlaceholderLines count={2} />}
-        </div>
-
-        {projects?.length > 0 && (
-          <div className="rv-section">
-            <h2 className="rv-section-title">Projects</h2>
-            {projects.map(proj => (
-              <div key={proj.id} className="rv-entry">
-                <div className="rv-entry-header">
-                  <div>
-                    <div className="rv-entry-title">{proj.name || "Project Name"}</div>
-                    {proj.tech && <div className="rv-entry-sub rv-tech">{proj.tech}</div>}
-                  </div>
-                  {proj.link && <div className="rv-entry-date">{proj.link}</div>}
-                </div>
-                {proj.description && <p className="rv-body rv-entry-desc">{proj.description}</p>}
-              </div>
+            {contactItems.map((item, i) => (
+              <span key={i} className="rv-contact-item">{item}</span>
             ))}
           </div>
         )}
-
-        <div className="rv-section">
-          <h2 className="rv-section-title">Skills</h2>
-          {skills?.trim() ? (
-            <div className="rv-skills">
-              {skills.split(",").map((s, i) => (
-                <span key={i} className="rv-skill-tag">{s.trim()}</span>
-              ))}
-            </div>
-          ) : <PlaceholderLines count={1} />}
-        </div>
-
       </div>
-    </div>
-  );
-}
 
-function PlaceholderLines({ count }) {
-  return (
-    <div className="rv-placeholder-lines">
-      {Array.from({ length: count }).map((_, i) => (
-        <div key={i} className="rv-placeholder-line" style={{ width: `${70 + (i % 3) * 10}%` }} />
-      ))}
+      <div className="rv-rule" />
+
+      {/* ── SUMMARY ── */}
+      {hasSummary && (
+        <section className="rv-section">
+          <h2 className="rv-section-title">Summary</h2>
+          <p className="rv-body">{summary}</p>
+        </section>
+      )}
+
+      {/* ── EXPERIENCE ── */}
+      {hasExperience && (
+        <section className="rv-section">
+          <h2 className="rv-section-title">Experience</h2>
+          {experience.map(exp => (
+            <div key={exp.id} className="rv-entry">
+              <div className="rv-entry-top">
+                <div className="rv-entry-left">
+                  <span className="rv-entry-title">{exp.role || "Role"}</span>
+                  <span className="rv-entry-company">{exp.company || "Company"}</span>
+                </div>
+                {exp.duration && (
+                  <span className="rv-entry-date">{exp.duration}</span>
+                )}
+              </div>
+              {exp.description && (
+                <p className="rv-body rv-entry-body">{exp.description}</p>
+              )}
+            </div>
+          ))}
+        </section>
+      )}
+
+      {/* ── EDUCATION ── */}
+      {hasEducation && (
+        <section className="rv-section">
+          <h2 className="rv-section-title">Education</h2>
+          {education.map(edu => (
+            <div key={edu.id} className="rv-entry">
+              <div className="rv-entry-top">
+                <div className="rv-entry-left">
+                  <span className="rv-entry-title">{edu.degree || "Degree"}</span>
+                  <span className="rv-entry-company">{edu.institution || "Institution"}</span>
+                </div>
+                <div className="rv-entry-right">
+                  {edu.year  && <span className="rv-entry-date">{edu.year}</span>}
+                  {edu.grade && <span className="rv-entry-grade">{edu.grade}</span>}
+                </div>
+              </div>
+            </div>
+          ))}
+        </section>
+      )}
+
+      {/* ── PROJECTS ── */}
+      {hasProjects && (
+        <section className="rv-section">
+          <h2 className="rv-section-title">Projects</h2>
+          {projects.map(proj => (
+            <div key={proj.id} className="rv-entry">
+              <div className="rv-entry-top">
+                <div className="rv-entry-left">
+                  <span className="rv-entry-title">{proj.name || "Project"}</span>
+                  {proj.tech && <span className="rv-entry-tech">{proj.tech}</span>}
+                </div>
+                {proj.link && (
+                  <span className="rv-entry-date">{proj.link}</span>
+                )}
+              </div>
+              {proj.description && (
+                <p className="rv-body rv-entry-body">{proj.description}</p>
+              )}
+            </div>
+          ))}
+        </section>
+      )}
+
+      {/* ── SKILLS ── */}
+      {hasSkills && (
+        <section className="rv-section">
+          <h2 className="rv-section-title">Skills</h2>
+          <div className="rv-skills">
+            {skillList.map((s, i) => (
+              <span key={i} className="rv-skill">{s}</span>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ── Empty state when nothing filled ── */}
+      {!hasPersonal && !hasSummary && !hasExperience && !hasEducation && !hasProjects && !hasSkills && (
+        <div className="rv-empty">
+          <p>Your resume preview will appear here as you fill in the form.</p>
+          <p>Click <strong>Load Sample Data</strong> to see an example.</p>
+        </div>
+      )}
+
     </div>
   );
 }

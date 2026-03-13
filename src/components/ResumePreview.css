@@ -1,132 +1,158 @@
-import "./ResumePreview.css";
+/* 📁 Location: src/components/ResumePreview.css  ← MODIFIED (replace entire file) */
 
-// ResumePreview — clean, print-ready black & white resume layout
-// Used both in the builder right panel (scaled down) and the /preview page
-
-export default function ResumePreview({ resume, scale = 1 }) {
-  const { personal, summary, education, experience, projects, skills, links } = resume;
-  const hasName = personal?.name?.trim();
-
-  return (
-    <div className="resume-shell" style={{ transform: `scale(${scale})`, transformOrigin: "top left" }}>
-      <div className="resume-doc">
-
-        {/* ── HEADER ── */}
-        <div className="rv-header">
-          {hasName
-            ? <h1 className="rv-name">{personal.name}</h1>
-            : <h1 className="rv-name rv-placeholder">Your Name</h1>
-          }
-
-          <div className="rv-contact">
-            {personal?.email    && <span>{personal.email}</span>}
-            {personal?.phone    && <span>{personal.phone}</span>}
-            {personal?.location && <span>{personal.location}</span>}
-            {links?.github      && <span>{links.github}</span>}
-            {links?.linkedin    && <span>{links.linkedin}</span>}
-          </div>
-        </div>
-
-        <div className="rv-divider" />
-
-        {/* ── SUMMARY ── */}
-        {summary ? (
-          <div className="rv-section">
-            <h2 className="rv-section-title">Summary</h2>
-            <p className="rv-body">{summary}</p>
-          </div>
-        ) : (
-          <div className="rv-section rv-empty-section">
-            <h2 className="rv-section-title">Summary</h2>
-            <p className="rv-placeholder-text">Your professional summary will appear here.</p>
-          </div>
-        )}
-
-        {/* ── EXPERIENCE ── */}
-        <div className="rv-section">
-          <h2 className="rv-section-title">Experience</h2>
-          {experience?.length > 0 ? experience.map(exp => (
-            <div key={exp.id} className="rv-entry">
-              <div className="rv-entry-header">
-                <div>
-                  <div className="rv-entry-title">{exp.role || "Role"}</div>
-                  <div className="rv-entry-sub">{exp.company || "Company"}</div>
-                </div>
-                <div className="rv-entry-date">{exp.duration}</div>
-              </div>
-              {exp.description && <p className="rv-body rv-entry-desc">{exp.description}</p>}
-            </div>
-          )) : (
-            <PlaceholderLines count={3} />
-          )}
-        </div>
-
-        {/* ── EDUCATION ── */}
-        <div className="rv-section">
-          <h2 className="rv-section-title">Education</h2>
-          {education?.length > 0 ? education.map(edu => (
-            <div key={edu.id} className="rv-entry">
-              <div className="rv-entry-header">
-                <div>
-                  <div className="rv-entry-title">{edu.degree || "Degree"}</div>
-                  <div className="rv-entry-sub">{edu.institution || "Institution"}</div>
-                </div>
-                <div className="rv-entry-date">{edu.year}{edu.grade ? ` · ${edu.grade}` : ""}</div>
-              </div>
-            </div>
-          )) : (
-            <PlaceholderLines count={2} />
-          )}
-        </div>
-
-        {/* ── PROJECTS ── */}
-        {(projects?.length > 0) && (
-          <div className="rv-section">
-            <h2 className="rv-section-title">Projects</h2>
-            {projects.map(proj => (
-              <div key={proj.id} className="rv-entry">
-                <div className="rv-entry-header">
-                  <div>
-                    <div className="rv-entry-title">{proj.name || "Project Name"}</div>
-                    {proj.tech && <div className="rv-entry-sub rv-tech">{proj.tech}</div>}
-                  </div>
-                  {proj.link && <div className="rv-entry-date">{proj.link}</div>}
-                </div>
-                {proj.description && <p className="rv-body rv-entry-desc">{proj.description}</p>}
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* ── SKILLS ── */}
-        <div className="rv-section">
-          <h2 className="rv-section-title">Skills</h2>
-          {skills?.trim() ? (
-            <div className="rv-skills">
-              {skills.split(",").map((s, i) => (
-                <span key={i} className="rv-skill-tag">{s.trim()}</span>
-              ))}
-            </div>
-          ) : (
-            <PlaceholderLines count={1} />
-          )}
-        </div>
-
-      </div>
-    </div>
-  );
+.resume-doc {
+  background: #fff;
+  color: #111;
+  padding: 48px 52px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  line-height: 1.65;
+  min-height: 900px;
+  border: 1px solid #e0dbd4;
+  border-radius: 4px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.06);
 }
 
-function PlaceholderLines({ count }) {
-  return (
-    <div className="rv-placeholder-lines">
-      {Array.from({ length: count }).map((_, i) => (
-        <div
-          key={i}
-          className="rv-placeholder-line"
-          style={{ width: `${70 + (i % 3) * 10}%` }}
-        />
-      ))}
-    </div>
-  );
+/* Header */
+.rv-header    { margin-bottom: 14px; }
+.rv-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: #111;
+  margin-bottom: 8px;
 }
+.rv-ghost { color: #ccc; font-style: italic; }
+
+.rv-contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px 0;
+}
+.rv-contact-item {
+  font-size: 12px;
+  color: #555;
+}
+.rv-contact-item:not(:last-child)::after {
+  content: ' · ';
+  color: #bbb;
+  margin: 0 6px;
+}
+
+.rv-rule {
+  border: none;
+  border-top: 2px solid #111;
+  margin: 12px 0 18px;
+}
+
+/* Sections */
+.rv-section { margin-bottom: 18px; }
+
+.rv-section-title {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #111;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 4px;
+  margin-bottom: 10px;
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* Entry */
+.rv-entry {
+  margin-bottom: 11px;
+  padding-bottom: 11px;
+  border-bottom: 1px solid #f0ece6;
+}
+.rv-entry:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.rv-entry-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+.rv-entry-left {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.rv-entry-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.rv-entry-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111;
+}
+.rv-entry-company {
+  font-size: 12px;
+  color: #555;
+}
+.rv-entry-date {
+  font-size: 11px;
+  color: #888;
+  white-space: nowrap;
+  font-family: 'DM Mono', monospace;
+  flex-shrink: 0;
+}
+.rv-entry-grade {
+  font-size: 11px;
+  color: #888;
+  font-family: 'DM Mono', monospace;
+}
+.rv-entry-tech {
+  font-size: 11px;
+  color: #777;
+  font-family: 'DM Mono', monospace;
+}
+.rv-body {
+  font-size: 12.5px;
+  color: #333;
+  line-height: 1.7;
+}
+.rv-entry-body { margin-top: 3px; }
+
+/* Skills */
+.rv-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.rv-skill {
+  font-size: 11.5px;
+  padding: 3px 9px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  color: #333;
+  font-family: 'DM Mono', monospace;
+}
+
+/* Empty state */
+.rv-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 300px;
+  text-align: center;
+  color: #bbb;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.rv-empty strong { color: #999; }

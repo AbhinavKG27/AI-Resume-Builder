@@ -198,3 +198,47 @@
   max-width: 700px;
   margin: 0 auto;
 }
+
+/* ── ADDITIONS for autosave + ATS layout ── */
+
+.preview-panel-header {
+  padding: var(--s2) var(--s3);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface);
+  flex-shrink: 0;
+}
+.preview-header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+}
+
+.autosave-badge {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: #16a34a;
+  letter-spacing: 0.04em;
+}
+
+.builder-right-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--s3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+}
+
+.word-count {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--text-3);
+  text-align: right;
+  margin-top: -8px;
+}
+
+/* Override old preview-panel-body / preview-scaler if present */
+.preview-panel-body { display: none; }
