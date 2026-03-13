@@ -1,108 +1,52 @@
-// App.jsx — Root of the application.
-// Responsibilities:
-//   1. Hold all shared state via useAppState()
-//   2. Decide which page to render based on currentRoute
-//   3. Render TopBar, StepRail, active page, and Toast
+import { useState, useCallback } from "react";
+import { useResumeState } from "./hooks/useResumeState";
 
-import { useAppState } from "./hooks/useAppState";
-import { STEPS }       from "./data/steps";
-
-import TopBar   from "./components/TopBar";
-import StepRail from "./components/StepRail";
-import Icon     from "./components/Icon";
-
-import StepPage  from "./pages/StepPage";
-import ProofPage from "./pages/ProofPage";
+import TopNav      from "./components/TopNav";
+import HomePage    from "./pages/HomePage";
+import BuilderPage from "./pages/BuilderPage";
+import PreviewPage from "./pages/PreviewPage";
+import ProofPage   from "./pages/ProofPage";
 
 import "./styles/global.css";
 
 export default function App() {
-  const state = useAppState();
+  const [route, setRoute] = useState("/");
+  const nav = useCallback((r) => { setRoute(r); window.scrollTo(0, 0); }, []);
 
-  const {
-    currentRoute, nav, isStepUnlocked,
-    artifacts, screenshots,
-    feedback, setFeedback,
-    proofLinks, setProofLinks,
-    toast,
-    doneCount, allDone,
-    handleArtifact, handleScreenshot, copySubmission,
-  } = state;
+  // All resume state lives here and is passed down
+  const resumeState = useResumeState();
+  const { resume } = resumeState;
 
-  // Resolve which step object matches the current route
-  const isProof      = currentRoute === "/rb/proof";
-  const currentStep  = STEPS.find(s => s.route === currentRoute);
-  const hasArtifact  = currentStep
-    ? !!artifacts[`rb_step_${currentStep.id}_artifact`]
-    : false;
+  // Bundle all mutation handlers for BuilderPage
+  const handlers = {
+    loadSample:       resumeState.loadSample,
+    clearAll:         resumeState.clearAll,
+    setPersonal:      resumeState.setPersonal,
+    setSummary:       resumeState.setSummary,
+    setSkills:        resumeState.setSkills,
+    setLinks:         resumeState.setLinks,
+    addEducation:     resumeState.addEducation,
+    updateEducation:  resumeState.updateEducation,
+    removeEducation:  resumeState.removeEducation,
+    addExperience:    resumeState.addExperience,
+    updateExperience: resumeState.updateExperience,
+    removeExperience: resumeState.removeExperience,
+    addProject:       resumeState.addProject,
+    updateProject:    resumeState.updateProject,
+    removeProject:    resumeState.removeProject,
+  };
 
-  // Top bar center label
-  const topCenter = isProof
-    ? "Project 3 — Proof of Work"
-    : currentStep
-      ? `Project 3 — Step ${currentStep.id} of 8`
-      : "Project 3";
+  // Hide topnav on home (it has its own CTA bar)
+  const showNav = true;
 
   return (
     <>
-      {/* ── Fixed top bar ── */}
-      <TopBar
-        stepLabel={topCenter}
-        isProof={isProof}
-        isComplete={hasArtifact}
-      />
+      {showNav && <TopNav route={route} nav={nav} />}
 
-      {/* ── Fixed left rail ── */}
-      <StepRail
-        currentRoute={currentRoute}
-        artifacts={artifacts}
-        isStepUnlocked={isStepUnlocked}
-        nav={nav}
-      />
-
-      {/* ── Page content ── */}
-      {isProof ? (
-        <ProofPage
-          artifacts={artifacts}
-          proofLinks={proofLinks}
-          setProofLinks={setProofLinks}
-          copySubmission={copySubmission}
-          doneCount={doneCount}
-          allDone={allDone}
-          nav={nav}
-        />
-      ) : currentStep ? (
-        <StepPage
-          step={currentStep}
-          artifacts={artifacts}
-          screenshots={screenshots}
-          feedback={feedback}
-          setFeedback={setFeedback}
-          onArtifact={handleArtifact}
-          onScreenshot={handleScreenshot}
-          nav={nav}
-        />
-      ) : (
-        // Fallback — unknown route, redirect home
-        <div style={{ marginLeft: 64, marginTop: 52, padding: 40, color: "var(--muted)" }}>
-          Route not found.{" "}
-          <button
-            className="btn btn-ghost"
-            style={{ marginLeft: 12 }}
-            onClick={() => nav("/rb/01-problem")}
-          >
-            Go to Step 1
-          </button>
-        </div>
-      )}
-
-      {/* ── Toast notifications ── */}
-      {toast && (
-        <div className="toast">
-          <Icon name={toast.icon} size={14} />
-          {toast.msg}
-        </div>
-      )}
+      {route === "/"         && <HomePage    nav={nav} />}
+      {route === "/builder"  && <BuilderPage resume={resume} handlers={handlers} nav={nav} />}
+      {route === "/preview"  && <PreviewPage resume={resume} nav={nav} />}
+      {route === "/proof"    && <ProofPage   nav={nav} />}
     </>
   );
 }

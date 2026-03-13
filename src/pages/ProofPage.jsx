@@ -1,145 +1,66 @@
-// ProofPage — /rb/proof
-// Shows: 8-step completion status, links form, copy submission button.
-
-import Icon from "../components/Icon";
-import { STEPS } from "../data/steps";
 import "./ProofPage.css";
 
-export default function ProofPage({
-  artifacts,
-  proofLinks,
-  setProofLinks,
-  copySubmission,
-  doneCount,
-  nav,
-}) {
-  const pct = Math.round((doneCount / 8) * 100);
+const ARTIFACTS = [
+  { id: 1, label: "Problem Statement",    status: "pending" },
+  { id: 2, label: "Market Research",      status: "pending" },
+  { id: 3, label: "System Architecture",  status: "pending" },
+  { id: 4, label: "High-Level Design",    status: "pending" },
+  { id: 5, label: "Low-Level Design",     status: "pending" },
+  { id: 6, label: "Build Screenshot",     status: "pending" },
+  { id: 7, label: "Test Plan",            status: "pending" },
+  { id: 8, label: "Deployment Proof",     status: "pending" },
+];
 
-  const goToNextIncomplete = () => {
-    const next = STEPS.find(s => !artifacts[`rb_step_${s.id}_artifact`]);
-    if (next) nav(next.route);
-  };
-
+export default function ProofPage({ nav }) {
   return (
     <div className="proof-page">
+      <div className="proof-inner">
 
-      {/* Hero */}
-      <div className="proof-hero">
-        <div className="proof-badge">
-          <Icon name="trophy" size={12} /> PROOF OF WORK
-        </div>
-        <div className="proof-title">
-          AI Resume Builder<br />Build Track
-        </div>
-        <div className="proof-sub">
-          Project 3 · KodNest Premium · {doneCount}/8 steps complete
-        </div>
-      </div>
-
-      {/* Body grid */}
-      <div className="proof-body">
-
-        {/* Step status */}
-        <div className="proof-card">
-          <h3>Step Completion</h3>
-          <div className="step-grid">
-            {STEPS.map(s => {
-              const done = !!artifacts[`rb_step_${s.id}_artifact`];
-              const a    = artifacts[`rb_step_${s.id}_artifact`];
-              return (
-                <div key={s.id} className={`step-row ${done ? "done" : "pending"}`}>
-                  <div className={`step-dot ${done ? "done" : "pending"}`}>
-                    {done ? <Icon name="check" size={12} /> : s.tag}
-                  </div>
-                  <div className="step-row-info">
-                    <div className="step-row-label">{s.label}</div>
-                    {done && (
-                      <div className="step-row-file">{a.name}</div>
-                    )}
-                  </div>
-                  <div className="step-row-status">
-                    {done ? "✓ DONE" : "PENDING"}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+        {/* Header */}
+        <div className="proof-header">
+          <div className="section-tag">KodNest Premium · Project 3</div>
+          <h1 className="proof-title">Proof of Work</h1>
+          <p className="proof-sub">
+            Complete all 8 build steps and submit your artifacts below.
+            This page is your final submission record.
+          </p>
         </div>
 
-        {/* Right column: completion + links */}
-        <div className="proof-right-col">
-
-          {/* Completion % */}
-          <div className="proof-card">
-            <h3>Completion</h3>
-            <span className="completion-pct">{pct}%</span>
-            <div className="completion-label">
-              {doneCount} of 8 steps with artifacts uploaded
+        {/* Artifacts grid */}
+        <div className="artifacts-grid">
+          {ARTIFACTS.map(a => (
+            <div key={a.id} className="artifact-card card">
+              <div className="artifact-num">{String(a.id).padStart(2, "0")}</div>
+              <div className="artifact-info">
+                <div className="artifact-label">{a.label}</div>
+                <div className="artifact-status pending">Awaiting artifact</div>
+              </div>
+              <div className="artifact-upload-zone">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Upload
+              </div>
             </div>
-            <div className="completion-bar-track">
-              <div
-                className="completion-bar-fill"
-                style={{
-                  width: `${pct}%`,
-                  background: pct === 100 ? "var(--success)" : "var(--accent)",
-                }}
-              />
+          ))}
+        </div>
+
+        {/* Submission links */}
+        <div className="proof-links card">
+          <h3 className="proof-links-title">Submission Links</h3>
+          <div className="proof-links-grid">
+            <div className="proof-link-row">
+              <label className="label">Lovable URL</label>
+              <input className="proof-input" type="url" placeholder="https://lovable.dev/projects/..." />
             </div>
-            {doneCount < 8 && (
-              <button
-                className="btn btn-ghost continue-btn"
-                onClick={goToNextIncomplete}
-              >
-                <Icon name="arrow" size={13} />
-                Continue Building
-              </button>
-            )}
-          </div>
-
-          {/* Submission links */}
-          <div className="proof-card">
-            <h3>Submission Links</h3>
-            <div className="link-input-group">
-
-              <div className="link-input-row">
-                <label><Icon name="external" size={10} /> LOVABLE URL</label>
-                <input
-                  type="url"
-                  placeholder="https://lovable.dev/projects/..."
-                  value={proofLinks.lovable}
-                  onChange={e => setProofLinks(l => ({ ...l, lovable: e.target.value }))}
-                />
-              </div>
-
-              <div className="link-input-row">
-                <label><Icon name="github" size={10} /> GITHUB URL</label>
-                <input
-                  type="url"
-                  placeholder="https://github.com/username/..."
-                  value={proofLinks.github}
-                  onChange={e => setProofLinks(l => ({ ...l, github: e.target.value }))}
-                />
-              </div>
-
-              <div className="link-input-row">
-                <label><Icon name="globe" size={10} /> DEPLOY URL</label>
-                <input
-                  type="url"
-                  placeholder="https://your-app.vercel.app"
-                  value={proofLinks.deploy}
-                  onChange={e => setProofLinks(l => ({ ...l, deploy: e.target.value }))}
-                />
-              </div>
-
+            <div className="proof-link-row">
+              <label className="label">GitHub URL</label>
+              <input className="proof-input" type="url" placeholder="https://github.com/username/..." />
+            </div>
+            <div className="proof-link-row">
+              <label className="label">Deploy URL</label>
+              <input className="proof-input" type="url" placeholder="https://your-app.vercel.app" />
             </div>
           </div>
-
-        </div>
-
-        {/* Full-width submit button */}
-        <div className="proof-submit-row">
-          <button className="btn-submit" onClick={copySubmission}>
-            <Icon name="copy" size={16} />
+          <button className="btn btn-primary proof-submit">
             Copy Final Submission
           </button>
         </div>

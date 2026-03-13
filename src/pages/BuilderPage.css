@@ -1,0 +1,200 @@
+.builder-page {
+  display: flex;
+  height: calc(100vh - var(--nav-h));
+  margin-top: var(--nav-h);
+  overflow: hidden;
+}
+
+/* ── LEFT FORM COL ── */
+.builder-left {
+  width: 420px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.builder-toolbar {
+  padding: var(--s2) var(--s3);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+  flex-shrink: 0;
+}
+.builder-title {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+.toolbar-actions { display: flex; gap: var(--s1); align-items: center; }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+
+/* Section tab strip */
+.section-tabs {
+  display: flex;
+  gap: 2px;
+  padding: var(--s1) var(--s2);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  flex-shrink: 0;
+  background: var(--bg);
+}
+.section-tabs::-webkit-scrollbar { height: 0; }
+
+.section-tab {
+  padding: 5px 12px;
+  border-radius: var(--radius);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-3);
+  background: none;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+.section-tab:hover  { color: var(--text-2); background: var(--bg-alt); }
+.section-tab.active { color: var(--accent); background: var(--accent-soft); font-weight: 600; }
+
+/* Form body */
+.form-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--s3);
+}
+
+.form-section { }
+.form-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--s2);
+}
+.form-section-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+}
+.form-section-body { display: flex; flex-direction: column; gap: var(--s2); }
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s2);
+}
+
+/* Add / Remove buttons */
+.btn-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: var(--radius);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: 1px solid rgba(139,0,0,0.15);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-add:hover { background: rgba(139,0,0,0.12); }
+
+.btn-remove {
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: var(--radius);
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-3);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-remove:hover { background: #fff0f0; border-color: var(--accent); color: var(--accent); }
+
+/* Entry cards */
+.entry-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--s2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+.entry-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.entry-card-num {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-3);
+  font-family: var(--font-mono);
+}
+
+.empty-state {
+  padding: var(--s3);
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-3);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-lg);
+  font-style: italic;
+}
+
+/* Builder footer */
+.builder-footer {
+  padding: var(--s2) var(--s3);
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+  background: var(--surface);
+}
+
+/* ── RIGHT PREVIEW COL ── */
+.builder-right {
+  flex: 1;
+  min-width: 0;
+  background: var(--bg-alt);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.preview-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.preview-panel-header {
+  padding: var(--s2) var(--s3);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface);
+  flex-shrink: 0;
+}
+
+.preview-panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--s3);
+}
+
+.preview-scaler {
+  max-width: 700px;
+  margin: 0 auto;
+}
