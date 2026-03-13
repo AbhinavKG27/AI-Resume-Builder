@@ -1,121 +1,108 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+// App.jsx — Root of the application.
+// Responsibilities:
+//   1. Hold all shared state via useAppState()
+//   2. Decide which page to render based on currentRoute
+//   3. Render TopBar, StepRail, active page, and Toast
 
-function App() {
-  const [count, setCount] = useState(0)
+import { useAppState } from "./hooks/useAppState";
+import { STEPS }       from "./data/steps";
+
+import TopBar   from "./components/TopBar";
+import StepRail from "./components/StepRail";
+import Icon     from "./components/Icon";
+
+import StepPage  from "./pages/StepPage";
+import ProofPage from "./pages/ProofPage";
+
+import "./styles/global.css";
+
+export default function App() {
+  const state = useAppState();
+
+  const {
+    currentRoute, nav, isStepUnlocked,
+    artifacts, screenshots,
+    feedback, setFeedback,
+    proofLinks, setProofLinks,
+    toast,
+    doneCount, allDone,
+    handleArtifact, handleScreenshot, copySubmission,
+  } = state;
+
+  // Resolve which step object matches the current route
+  const isProof      = currentRoute === "/rb/proof";
+  const currentStep  = STEPS.find(s => s.route === currentRoute);
+  const hasArtifact  = currentStep
+    ? !!artifacts[`rb_step_${currentStep.id}_artifact`]
+    : false;
+
+  // Top bar center label
+  const topCenter = isProof
+    ? "Project 3 — Proof of Work"
+    : currentStep
+      ? `Project 3 — Step ${currentStep.id} of 8`
+      : "Project 3";
 
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+      {/* ── Fixed top bar ── */}
+      <TopBar
+        stepLabel={topCenter}
+        isProof={isProof}
+        isComplete={hasArtifact}
+      />
 
-      <div className="ticks"></div>
+      {/* ── Fixed left rail ── */}
+      <StepRail
+        currentRoute={currentRoute}
+        artifacts={artifacts}
+        isStepUnlocked={isStepUnlocked}
+        nav={nav}
+      />
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+      {/* ── Page content ── */}
+      {isProof ? (
+        <ProofPage
+          artifacts={artifacts}
+          proofLinks={proofLinks}
+          setProofLinks={setProofLinks}
+          copySubmission={copySubmission}
+          doneCount={doneCount}
+          allDone={allDone}
+          nav={nav}
+        />
+      ) : currentStep ? (
+        <StepPage
+          step={currentStep}
+          artifacts={artifacts}
+          screenshots={screenshots}
+          feedback={feedback}
+          setFeedback={setFeedback}
+          onArtifact={handleArtifact}
+          onScreenshot={handleScreenshot}
+          nav={nav}
+        />
+      ) : (
+        // Fallback — unknown route, redirect home
+        <div style={{ marginLeft: 64, marginTop: 52, padding: 40, color: "var(--muted)" }}>
+          Route not found.{" "}
+          <button
+            className="btn btn-ghost"
+            style={{ marginLeft: 12 }}
+            onClick={() => nav("/rb/01-problem")}
+          >
+            Go to Step 1
+          </button>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      )}
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+      {/* ── Toast notifications ── */}
+      {toast && (
+        <div className="toast">
+          <Icon name={toast.icon} size={14} />
+          {toast.msg}
+        </div>
+      )}
     </>
-  )
+  );
 }
-
-export default App

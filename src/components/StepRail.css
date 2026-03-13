@@ -1,0 +1,57 @@
+.step-rail {
+  position: fixed;
+  top: 52px;
+  left: 0;
+  bottom: 0;
+  width: 64px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 0;
+  gap: 4px;
+  overflow-y: auto;
+}
+
+.rail-step {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+  font-family: var(--mono);
+}
+.rail-step:hover          { background: var(--surface2); }
+.rail-step.current        { background: rgba(124,106,247,0.15); border-color: rgba(124,106,247,0.4); }
+.rail-step.done           { background: rgba(52,211,153,0.08);  border-color: rgba(52,211,153,0.2); }
+.rail-step.locked         { opacity: 0.4; cursor: not-allowed; }
+
+.rail-step-num {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.rail-step.current .rail-step-num { color: var(--accent2); }
+.rail-step.done    .rail-step-num { color: var(--success); }
+
+.rail-proof {
+  margin-top: auto;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+  color: var(--muted);
+}
+.rail-proof:hover  { background: var(--surface2); color: var(--gold); }
+.rail-proof.active { background: rgba(245,158,11,0.12); border-color: rgba(245,158,11,0.3); color: var(--gold); }
