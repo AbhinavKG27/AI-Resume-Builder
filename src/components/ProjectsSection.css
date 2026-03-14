@@ -61,7 +61,7 @@
 
 /* Entry card */
 .project-entry {
-  background: var(--secondary-dark);
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   overflow: hidden;
@@ -80,10 +80,10 @@
   cursor: pointer;
   user-select: none;
   gap: var(--s2);
-  background: var(--primary-dark);
+  background: var(--bg);
   transition: background 0.12s;
 }
-.project-entry-header:hover { background: var(--secondary-dark); }
+.project-entry-header:hover { background: var(--surface); }
 .project-entry.collapsed .project-entry-header {
   border-radius: var(--radius-lg);
 }
@@ -113,7 +113,7 @@
   font-size: 10px;
   font-family: var(--font-mono);
   color: var(--text-3);
-  background: var(--secondary-dark);
+  background: var(--surface);
   border: 1px solid var(--border);
   padding: 2px 7px;
   border-radius: 10px;

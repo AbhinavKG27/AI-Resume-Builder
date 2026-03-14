@@ -1,11 +1,25 @@
+/* TopNav — adapts to both themes via CSS variables */
+
 .topnav {
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 100;
   height: var(--nav-h);
-  background: rgba(44, 43, 48, 0.96);
-  backdrop-filter: blur(12px);
+  background: var(--surface);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+/* Dark: slightly transparent overlay */
+[data-theme="dark"] .topnav {
+  background: rgba(44, 43, 48, 0.94);
+}
+/* Light: crisp white bar */
+[data-theme="light"] .topnav {
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 1px 0 var(--border), 0 2px 12px rgba(0,0,0,0.04);
 }
 
 .topnav-inner {
@@ -15,9 +29,10 @@
   height: 100%;
   display: flex;
   align-items: center;
-  gap: var(--s4);
+  gap: var(--s3);
 }
 
+/* ── Logo ── */
 .topnav-logo {
   display: flex;
   align-items: center;
@@ -28,53 +43,154 @@
   flex-shrink: 0;
 }
 .logo-mark {
-  width: 32px;
-  height: 32px;
+  width: 32px; height: 32px;
   background: var(--accent-coral);
-  color: var(--primary-dark);
-  border-radius: 6px;
+  color: #fff;
+  border-radius: 8px;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: center; justify-content: center;
   font-family: var(--font-display);
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 12px; font-weight: 700;
   letter-spacing: 0.05em;
+  box-shadow: 0 2px 8px rgba(245,143,124,0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.topnav-logo:hover .logo-mark {
+  transform: scale(1.05);
+  box-shadow: 0 3px 12px rgba(245,143,124,0.5);
 }
 .logo-name {
   font-family: var(--font-display);
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 16px; font-weight: 600;
   color: var(--text);
   letter-spacing: -0.01em;
+  transition: color 0.25s ease;
 }
 
+/* ── Nav links ── */
 .topnav-links {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
   flex: 1;
 }
 .nav-link {
   padding: 6px 14px;
   border-radius: var(--radius);
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 13px; font-weight: 500;
   color: var(--text-2);
-  background: none;
-  border: none;
+  background: none; border: none;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.18s ease;
   letter-spacing: 0.01em;
 }
-.nav-link:hover {
-  color: var(--text);
-  background: var(--surface);
-}
+.nav-link:hover  { color: var(--text); background: var(--bg-alt); }
 .nav-link.active {
   color: var(--accent-coral);
   background: var(--accent-soft);
   font-weight: 600;
 }
 
-.topnav-cta { margin-left: auto; }
+/* ── CTA ── */
+.topnav-cta { margin-left: 0; flex-shrink: 0; }
+
+/* ════════════════════════════════════════════
+   ELEGANT THEME TOGGLE
+════════════════════════════════════════════ */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  flex-shrink: 0;
+  /* no outer border — just the pill */
+}
+
+/* The pill itself */
+.toggle-pill {
+  position: relative;
+  width: 52px;
+  height: 28px;
+  border-radius: 50px;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+  flex-shrink: 0;
+}
+
+/* Dark mode pill: deep with coral glow */
+[data-theme="dark"] .toggle-pill {
+  background: linear-gradient(135deg, #3a3840 0%, #4F4F51 100%);
+  box-shadow: 0 0 0 1.5px rgba(245,143,124,0.5),
+              inset 0 1px 3px rgba(0,0,0,0.3);
+}
+/* Light mode pill: soft warm gradient */
+[data-theme="light"] .toggle-pill {
+  background: linear-gradient(135deg, #ece9e3 0%, #ddd9d2 100%);
+  box-shadow: 0 0 0 1.5px #E5E4E2,
+              inset 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* Sliding circle */
+.toggle-circle {
+  position: absolute;
+  top: 4px;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center; justify-content: center;
+  transition: left 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+              background 0.3s ease,
+              box-shadow 0.3s ease;
+}
+
+/* Dark mode: circle slides right, coral glow */
+[data-theme="dark"] .toggle-circle {
+  left: 28px;
+  background: #F58F7C;
+  box-shadow: 0 2px 6px rgba(245,143,124,0.6),
+              0 0 0 0 rgba(245,143,124,0);
+  color: #fff;
+}
+/* Light mode: circle slides left, warm white */
+[data-theme="light"] .toggle-circle {
+  left: 4px;
+  background: #FFFFFF;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  color: #d97706;
+}
+
+/* Icon sizing */
+.toggle-circle svg {
+  width: 11px; height: 11px;
+  flex-shrink: 0;
+}
+
+/* Hover: subtle scale + glow boost */
+.theme-toggle:hover .toggle-pill {
+  box-shadow: 0 0 0 2px var(--accent-coral),
+              0 0 12px rgba(245,143,124,0.25);
+}
+.theme-toggle:hover .toggle-circle {
+  transform: scale(1.08);
+}
+
+/* Label next to toggle */
+.toggle-label {
+  font-size: 11px; font-weight: 600;
+  font-family: var(--font-mono);
+  letter-spacing: 0.06em;
+  color: var(--text-3);
+  transition: color 0.2s ease;
+  user-select: none;
+  min-width: 32px;
+}
+.theme-toggle:hover .toggle-label { color: var(--text-2); }
+
+/* Mobile: hide label, keep pill */
+@media (max-width: 640px) {
+  .toggle-label { display: none; }
+  .topnav-cta   { display: none; }
+  .topnav-inner { padding: 0 var(--s2); gap: var(--s2); }
+}

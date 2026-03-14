@@ -1,9 +1,11 @@
 // 📁 Location: src/App.jsx  ← MODIFIED
+// Added: useAppTheme hook wired to TopNav toggle
 
 import { useState, useCallback } from "react";
 import { useResumeState }   from "./hooks/useResumeState";
 import { useTemplateState } from "./hooks/useTemplateState";
 import { useThemeState }    from "./hooks/useThemeState";
+import { useAppTheme }      from "./hooks/useAppTheme";
 
 import TopNav      from "./components/TopNav";
 import HomePage    from "./pages/HomePage";
@@ -18,9 +20,10 @@ export default function App() {
   const [route, setRoute] = useState("/");
   const nav = useCallback((r) => { setRoute(r); window.scrollTo(0, 0); }, []);
 
-  const resumeState              = useResumeState();
+  const resumeState               = useResumeState();
   const { template, setTemplate } = useTemplateState();
-  const { themeId, setTheme }    = useThemeState();
+  const { themeId, setTheme }     = useThemeState();
+  const { isDark, toggle }        = useAppTheme();
   const { resume } = resumeState;
 
   const handlers = {
@@ -43,7 +46,12 @@ export default function App() {
 
   return (
     <>
-      <TopNav route={route} nav={nav} />
+      <TopNav
+        route={route}
+        nav={nav}
+        isDark={isDark}
+        onToggleTheme={toggle}
+      />
 
       {route === "/"        && <HomePage nav={nav} />}
 

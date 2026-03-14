@@ -1,74 +1,43 @@
 .tag-input-wrap {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 5px;
-  padding: 7px 10px;
-  background: var(--primary-dark);
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: 5px; padding: 7px 10px;
+  background: var(--bg);
   border: 1px solid var(--border-2);
-  border-radius: var(--radius);
-  min-height: 40px;
-  cursor: text;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  border-radius: var(--radius); min-height: 40px; cursor: text;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 .tag-input-wrap:focus-within {
   border-color: var(--accent-coral);
-  box-shadow: 0 0 0 3px rgba(245,143,124,0.12);
+  box-shadow: 0 0 0 3px rgba(245,143,124,0.15);
 }
 
-/* Chip / pill — soft pink */
 .tag-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
+  display: inline-flex; align-items: center; gap: 5px;
   padding: 3px 8px 3px 10px;
   background: var(--accent-pink-soft);
   border: 1px solid var(--accent-pink);
   border-radius: 20px;
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 12px; font-weight: 500;
   color: var(--accent-pink);
-  line-height: 1.4;
-  white-space: nowrap;
+  line-height: 1.4; white-space: nowrap;
   animation: chipIn 0.15s ease;
 }
-@keyframes chipIn {
-  from { opacity: 0; transform: scale(0.88); }
-  to   { opacity: 1; transform: scale(1); }
-}
+[data-theme="light"] .tag-chip { color: #c4606e; border-color: #F2C4CE; }
+@keyframes chipIn { from { opacity:0; transform:scale(0.88); } to { opacity:1; transform:scale(1); } }
 
 .tag-chip-remove {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 10px;
-  color: var(--accent-pink);
-  padding: 0;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  opacity: 0.7;
-  transition: all 0.12s;
+  background: none; border: none; cursor: pointer;
+  font-size: 10px; color: inherit; padding: 0;
+  width: 14px; height: 14px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0.7; transition: all 0.12s;
 }
-.tag-chip-remove:hover {
-  background: var(--accent-pink);
-  color: var(--primary-dark);
-  opacity: 1;
-}
+.tag-chip-remove:hover { background: var(--accent-pink); color: #fff; opacity: 1; }
+[data-theme="light"] .tag-chip-remove:hover { color: #1E1E1E; }
 
 .tag-input-field {
-  border: none;
-  outline: none;
-  background: transparent;
-  font-size: 13px;
-  color: var(--text);
-  font-family: var(--font-body);
-  min-width: 120px;
-  flex: 1;
-  padding: 2px 0;
+  border: none; outline: none; background: transparent;
+  font-size: 13px; color: var(--text); font-family: var(--font-body);
+  min-width: 120px; flex: 1; padding: 2px 0;
 }
 .tag-input-field::placeholder { color: var(--text-3); opacity: 0.6; }
