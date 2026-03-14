@@ -7,7 +7,7 @@ export default function HomePage({ nav }) {
       {/* ── HERO ── */}
       <section className="hero">
         <div className="hero-inner">
-          <div className="section-tag">KodNest Premium</div>
+          <div className="section-tag">Premium Resume</div>
 
           <h1 className="hero-headline">
             Build a Resume<br />

@@ -49,7 +49,7 @@ export function useAppState() {
 
   const copySubmission = useCallback(() => {
     const lines = [
-      "=== KodNest Premium — AI Resume Builder Submission ===",
+      "=== AI Resume Builder Submission ===",
       "Project: AI Resume Builder (Project 3)",
       `Completed: ${doneCount}/8 steps`,
       "",

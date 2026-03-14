@@ -13,7 +13,7 @@ export default function TopBar({ stepLabel, isProof, isComplete }) {
   return (
     <header className="topbar">
       <div className="topbar-left">
-        <span className="topbar-logo">KODNEST</span>
+        <span className="topbar-logo">NEST</span>
         <span className="topbar-project">AI RESUME BUILDER</span>
       </div>
 
