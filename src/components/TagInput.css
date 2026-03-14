@@ -1,35 +1,33 @@
-/* 📁 Location: src/components/TagInput.css  ← NEW FILE */
-
 .tag-input-wrap {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 5px;
   padding: 7px 10px;
-  background: var(--bg);
-  border: 1px solid var(--border);
+  background: var(--primary-dark);
+  border: 1px solid var(--border-2);
   border-radius: var(--radius);
   min-height: 40px;
   cursor: text;
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 .tag-input-wrap:focus-within {
-  border-color: var(--text-3);
-  box-shadow: 0 0 0 3px rgba(26,24,20,0.06);
+  border-color: var(--accent-coral);
+  box-shadow: 0 0 0 3px rgba(245,143,124,0.12);
 }
 
-/* Chip / pill */
+/* Chip / pill — soft pink */
 .tag-chip {
   display: inline-flex;
   align-items: center;
   gap: 5px;
   padding: 3px 8px 3px 10px;
-  background: var(--bg-alt);
-  border: 1px solid var(--border-2);
+  background: var(--accent-pink-soft);
+  border: 1px solid var(--accent-pink);
   border-radius: 20px;
   font-size: 12px;
   font-weight: 500;
-  color: var(--text);
+  color: var(--accent-pink);
   line-height: 1.4;
   white-space: nowrap;
   animation: chipIn 0.15s ease;
@@ -44,7 +42,7 @@
   border: none;
   cursor: pointer;
   font-size: 10px;
-  color: var(--text-3);
+  color: var(--accent-pink);
   padding: 0;
   line-height: 1;
   display: flex;
@@ -53,14 +51,15 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
+  opacity: 0.7;
   transition: all 0.12s;
 }
 .tag-chip-remove:hover {
-  background: var(--border-2);
-  color: var(--accent);
+  background: var(--accent-pink);
+  color: var(--primary-dark);
+  opacity: 1;
 }
 
-/* Invisible input sits inline with chips */
 .tag-input-field {
   border: none;
   outline: none;
@@ -72,4 +71,4 @@
   flex: 1;
   padding: 2px 0;
 }
-.tag-input-field::placeholder { color: var(--text-3); opacity: 0.7; }
+.tag-input-field::placeholder { color: var(--text-3); opacity: 0.6; }

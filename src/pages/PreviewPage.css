@@ -1,21 +1,18 @@
-/* 📁 Location: src/pages/PreviewPage.css  ← REPLACED */
-
 .preview-page {
   padding-top: var(--nav-h);
   min-height: 100vh;
-  background: var(--bg-alt);
+  background: var(--primary-dark);
   display: flex;
   flex-direction: column;
 }
 
-/* ── Toolbar ── */
 .preview-toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--s2);
   padding: 10px var(--s3);
-  background: var(--surface);
+  background: var(--secondary-dark);
   border-bottom: 1px solid var(--border);
   position: sticky;
   top: var(--nav-h);
@@ -28,7 +25,6 @@
   font-family: var(--font-mono);
 }
 
-/* ── Body ── */
 .preview-body {
   flex: 1;
   padding: var(--s4) var(--s3);
@@ -44,7 +40,6 @@
   gap: 0;
 }
 
-/* Resume paper */
 .preview-paper {
   background: #fff;
   box-shadow: var(--shadow-lg);
@@ -54,7 +49,6 @@
   overflow-wrap: break-word;
 }
 
-/* ATS panel on preview sits above the resume */
 .preview-content .ats-variant-full {
   background: var(--surface);
   box-shadow: var(--shadow);
@@ -63,7 +57,6 @@
   border-bottom: 1px solid var(--border);
 }
 
-/* ── Mobile ── */
 @media (max-width: 640px) {
   .preview-body      { padding: var(--s2) var(--s1); }
   .preview-toolbar   { padding: 8px var(--s2); }

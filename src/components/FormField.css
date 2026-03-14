@@ -16,8 +16,8 @@
 .form-input {
   width: 100%;
   padding: 9px 12px;
-  background: var(--bg);
-  border: 1px solid var(--border);
+  background: var(--primary-dark);
+  border: 1px solid var(--border-2);
   border-radius: var(--radius);
   font-size: 14px;
   color: var(--text);
@@ -27,10 +27,10 @@
   line-height: 1.5;
 }
 .form-input:focus {
-  border-color: var(--text-3);
-  box-shadow: 0 0 0 3px rgba(26,24,20,0.06);
+  border-color: var(--accent-coral);
+  box-shadow: 0 0 0 3px rgba(245,143,124,0.12);
 }
-.form-input::placeholder { color: var(--text-3); opacity: 0.7; }
+.form-input::placeholder { color: var(--text-3); opacity: 0.6; }
 
 .form-textarea {
   resize: vertical;

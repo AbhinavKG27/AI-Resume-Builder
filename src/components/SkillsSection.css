@@ -1,12 +1,9 @@
-/* 📁 Location: src/components/SkillsSection.css  ← NEW FILE */
-
 .skills-section {
   display: flex;
   flex-direction: column;
   gap: var(--s3);
 }
 
-/* Header */
 .skills-header {
   display: flex;
   align-items: center;
@@ -38,45 +35,37 @@
   letter-spacing: 0.02em;
 }
 .btn-suggest:hover:not(:disabled) {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: var(--accent-soft);
+  border-color: var(--accent-pink);
+  color: var(--accent-pink);
+  background: var(--accent-pink-soft);
 }
 .btn-suggest.loading {
-  opacity: 0.7;
+  opacity: 0.6;
   cursor: not-allowed;
 }
 .btn-suggest.done {
-  border-color: rgba(22,163,74,0.3);
-  color: #16a34a;
-  background: rgba(22,163,74,0.06);
+  border-color: rgba(242,196,206,0.4);
+  color: var(--accent-pink);
+  background: var(--accent-pink-soft);
 }
 
-/* Spinner */
 .suggest-spinner {
   display: inline-block;
   width: 12px;
   height: 12px;
   border: 1.5px solid var(--border-2);
-  border-top-color: var(--accent);
+  border-top-color: var(--accent-coral);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-.suggest-check {
-  font-size: 12px;
-  font-weight: 700;
-}
+@keyframes spin { to { transform: rotate(360deg); } }
+.suggest-check { font-size: 12px; font-weight: 700; }
 
-/* Category grid */
 .skills-categories {
   display: flex;
   flex-direction: column;
   gap: var(--s3);
 }
-
 .skill-category {
   display: flex;
   flex-direction: column;
@@ -94,6 +83,6 @@
   font-family: var(--font-mono);
 }
 .skill-count {
-  color: var(--accent);
+  color: var(--accent-coral);
   font-size: 10px;
 }
