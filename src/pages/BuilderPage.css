@@ -38,17 +38,16 @@
 /* Section tab strip */
 .section-tabs {
   display: flex;
+  flex-wrap: wrap;
   gap: 2px;
-  padding: var(--s1) var(--s2);
+  padding: 8px var(--s2);
   border-bottom: 1px solid var(--border);
-  overflow-x: auto;
   flex-shrink: 0;
   background: var(--bg);
 }
-.section-tabs::-webkit-scrollbar { height: 0; }
 
 .section-tab {
-  padding: 5px 12px;
+  padding: 5px 11px;
   border-radius: var(--radius);
   font-size: 12px;
   font-weight: 500;
@@ -58,6 +57,7 @@
   cursor: pointer;
   white-space: nowrap;
   transition: all 0.15s;
+  flex-shrink: 0;
 }
 .section-tab:hover  { color: var(--text-2); background: var(--bg-alt); }
 .section-tab.active { color: var(--accent); background: var(--accent-soft); font-weight: 600; }
