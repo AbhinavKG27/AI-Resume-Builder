@@ -1,79 +1,105 @@
 # AI Resume Builder
 
-A premium, fully client-side resume builder with deterministic ATS scoring, live preview, template switching, color theming, and PDF export. Built with React + Vite. No backend required.
+A premium, fully client-side resume builder with live ATS scoring, template switching, dual-theme support, and PDF export. Built with React 18 + Vite. No backend, no account required — everything runs in the browser.
+
+---
+
+## What It Does
+
+You fill in a form. A live resume preview updates on the right. An ATS score tells you exactly what's missing and how to improve. When you're happy, export to PDF in one click.
 
 ---
 
 ## Features
 
 ### Resume Builder
-- **7-section form** — Personal Info, Summary, Experience, Education, Projects, Skills, Links
-- **Auto-save** — every keystroke persists to `localStorage` automatically
-- **Live preview** — right panel updates in real time as you type
-- **Sample data** — one-click load with a complete example resume (Priya Nair)
-- **Bullet guidance** — inline hints for action verbs and measurable impact
+- **7 form sections** — Personal Info, Summary, Experience, Education, Projects, Skills, Links
+- **Auto-save on every keystroke** — all data persists in `localStorage`, nothing is ever lost
+- **Live right-panel preview** — resume re-renders instantly as you type
+- **Load Sample Data** — fills the entire form with a complete example in one click
+- **Bullet guidance** — inline hints appear when experience bullets lack action verbs or numbers
+- **Skills tag input** — Enter/comma to add chips, three categories: Technical, Soft Skills, Tools
+- **Project entries** — collapsible cards with 200-char description limit and tech stack chips
 
-### ATS Score
-Deterministic scoring engine — no AI, no network calls. Score updates live as you edit.
+### ATS Score (Live, Deterministic)
+No AI. No network call. Pure rule-based scoring that re-calculates on every keystroke.
 
 | Rule | Points |
 |---|---|
 | Name provided | +10 |
 | Email provided | +10 |
 | Phone provided | +5 |
-| Summary > 50 characters | +10 |
-| Action verbs in summary/experience | +10 |
-| At least 1 experience with description | +15 |
+| Summary over 50 characters | +10 |
+| Action verbs used (built, led, designed…) | +10 |
+| At least 1 experience entry with description | +15 |
 | At least 1 education entry | +10 |
 | At least 5 skills | +10 |
 | At least 1 project | +10 |
 | LinkedIn link | +5 |
 | GitHub link | +5 |
-| **Total** | **100** |
+| **Maximum** | **100** |
 
-Score tiers: 🔴 **0–40** Needs Work · 🟡 **41–70** Getting There · 🟢 **71–100** Strong Resume
+Score tiers: 🔴 0–40 Needs Work · 🟡 41–70 Getting There · 🟢 71–100 Strong Resume
 
 ### Template System
-Three resume layouts, switchable without losing data:
+Three layouts — same data, completely different presentation:
 
 | Template | Style |
 |---|---|
-| **Classic** | Single-column, Playfair Display serif headings, horizontal rules |
-| **Modern** | Two-column — colored sidebar (contact + skills) + main content |
-| **Minimal** | Single-column, generous whitespace, no borders, sans-serif throughout |
+| **Classic** | Single column, Playfair Display serif headings, bold horizontal rules |
+| **Modern** | Two-column — colored sidebar with contact info + skills on the left |
+| **Minimal** | Single column, maximum whitespace, no borders, clean sans-serif throughout |
 
 ### Color Themes
-Five accent colors applied across headings, borders, and the Modern sidebar:
+Five accent colors that restyle headings, dividers, and sidebar backgrounds:
+Teal · Navy · Burgundy · Forest · Charcoal
 
-| Theme | Value |
-|---|---|
-| Teal (default) | `hsl(168, 60%, 40%)` |
-| Navy | `hsl(220, 60%, 35%)` |
-| Burgundy | `hsl(345, 60%, 35%)` |
-| Forest | `hsl(150, 50%, 30%)` |
-| Charcoal | `hsl(0, 0%, 25%)` |
+### Dark / Light Mode
+A pill-shaped toggle in the navbar switches between themes with a 0.25s crossfade.
+Preference is saved to `localStorage` and restored on every visit.
 
 ### Export
-- **Print** — opens browser print dialog
-- **Download PDF** — opens print dialog pre-configured for PDF save
-- **Copy as Text** — copies plain-text resume to clipboard
+- **Print** — browser print dialog
+- **Download PDF** — print dialog pre-aimed at "Save as PDF"
+- **Copy as Text** — clean plain-text resume to clipboard
 
 ### Proof + Submission (`/proof`)
-- **Step Completion Overview** — 8 auto-detected build steps
-- **Feature Test Checklist** — 10 automated + manual tests
-- **Artifact Collection** — Lovable, GitHub, and deployed URL inputs with validation
-- **Shipped Status** — unlocks only when all 3 gates pass simultaneously
+Built-in quality gate with four sections:
+1. **Step Completion** — 8 steps auto-detected from your resume data
+2. **Feature Test Checklist** — 10 automated + manual tests
+3. **Artifact Collection** — Lovable, GitHub, deployed URL with validation
+4. **Shipped Status** — unlocks only when all three gates pass simultaneously
 
 ---
 
 ## Tech Stack
 
-- **React 18** — UI and state management
-- **Vite** — dev server and build tool
-- **CSS Variables** — theming and design tokens
-- **localStorage** — all persistence (no backend)
-- **ReactDOM.createPortal** — print isolation
-- **No external UI libraries** — fully custom components
+| Layer | Choice |
+|---|---|
+| Framework | React 18 |
+| Build | Vite |
+| Styling | Pure CSS with custom properties |
+| State | useState + useCallback + useMemo |
+| Persistence | localStorage (no backend) |
+| Print / PDF | ReactDOM.createPortal + window.print() |
+| Fonts | Playfair Display + DM Sans + DM Mono |
+| Dependencies | React only |
+
+---
+
+## Getting Started
+
+```bash
+cd ai-resume
+npm install
+npm run dev
+# Opens at http://localhost:5173
+```
+
+```bash
+npm run build
+# Production output in /dist
+```
 
 ---
 
@@ -81,74 +107,45 @@ Five accent colors applied across headings, borders, and the Modern sidebar:
 
 ```
 src/
-├── App.jsx                        # Root: routing, state wiring
-├── main.jsx                       # React entry point
+├── App.jsx                        # Root: routing, all state wiring
+├── main.jsx                       # Entry point
 │
 ├── data/
-│   ├── sampleData.js              # SAMPLE_DATA + EMPTY_DATA
-│   ├── templates.js               # 3 template definitions
-│   └── themes.js                  # 5 color theme definitions
+│   ├── sampleData.js              # Full example resume data
+│   ├── templates.js               # Template definitions
+│   └── themes.js                  # Accent color theme definitions
 │
 ├── hooks/
-│   ├── useResumeState.js          # All resume state + localStorage + migration
-│   ├── useATSScore.js             # Deterministic ATS scoring (11 rules, max 100)
+│   ├── useResumeState.js          # Form state + localStorage + migration
+│   ├── useATSScore.js             # Scoring engine (11 rules, 100 pts max)
 │   ├── useTemplateState.js        # Template persistence
-│   └── useThemeState.js           # Theme persistence + CSS var injection
+│   ├── useThemeState.js           # Accent color + CSS var injection
+│   └── useAppTheme.js             # Dark / light mode toggle + persistence
 │
 ├── components/
-│   ├── TopNav.jsx/css             # Fixed navigation bar
-│   ├── FormField.jsx/css          # Reusable input + textarea
-│   ├── TagInput.jsx/css           # Chip/pill tag input
-│   ├── SkillsSection.jsx/css      # 3 skill categories + Suggest button
-│   ├── ProjectsSection.jsx/css    # Collapsible project entries
-│   ├── ResumePreview.jsx/css      # Live resume render (Classic/Modern/Minimal)
-│   ├── ATSScore.jsx/css           # Circular progress ring + suggestions
-│   ├── BulletGuidance.jsx/css     # Inline action verb hints
-│   ├── DesignControls.jsx/css     # Template thumbnails + color picker
-│   └── ExportBar.jsx/css          # Print + PDF + Copy as Text
+│   ├── TopNav                     # Navbar with theme toggle + CTA
+│   ├── FormField                  # Labeled input / textarea
+│   ├── TagInput                   # Chip-based tag input
+│   ├── SkillsSection              # Three-category skills + Suggest button
+│   ├── ProjectsSection            # Collapsible project cards
+│   ├── ResumePreview              # Live resume render (all 3 templates)
+│   ├── ATSScore                   # Ring + bars + suggestions
+│   ├── BulletGuidance             # Inline writing hints
+│   ├── DesignControls             # Template thumbnails + color circles
+│   └── ExportBar                  # Print / PDF / Copy
 │
 ├── pages/
-│   ├── HomePage.jsx/css           # / — landing
-│   ├── BuilderPage.jsx/css        # /builder — form + live preview
-│   ├── PreviewPage.jsx/css        # /preview — full preview + ATS + export
-│   └── ProofPage.jsx/css          # /proof — submission system
+│   ├── HomePage                   # / — landing
+│   ├── BuilderPage                # /builder — form + live preview
+│   ├── PreviewPage                # /preview — full preview + export
+│   └── ProofPage                  # /proof — submission system
 │
 ├── styles/
-│   ├── global.css                 # Design tokens, reset, shared utilities
-│   └── templates.css              # Template CSS overrides via data-template attr
+│   ├── global.css                 # All CSS variables + both themes + utilities
+│   └── templates.css              # Resume template overrides
 │
 └── utils/
-    └── exportText.js              # Plain-text resume generator + export validation
-```
-
----
-
-## Getting Started
-
-### Prerequisites
-- Node.js 18+
-- npm 9+
-
-### Install and Run
-
-```bash
-# Clone or download the project
-cd ai-resume
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-```
-
-Open [http://localhost:5173](http://localhost:5173)
-
-### Build for Production
-
-```bash
-npm run build
-# Output in dist/
+    └── exportText.js              # Plain-text generator + validation
 ```
 
 ---
@@ -157,75 +154,93 @@ npm run build
 
 | Route | Page |
 |---|---|
-| `/` | Home — landing page |
-| `/builder` | Builder — form + live preview + ATS score |
-| `/preview` | Preview — full resume + template/color controls + export |
-| `/proof` | Proof — test checklist + submission system |
+| `/` | Home |
+| `/builder` | Builder |
+| `/preview` | Preview + Export |
+| `/proof` | Proof + Submission |
 
 ---
 
 ## localStorage Keys
 
-| Key | Contents |
+| Key | Value |
 |---|---|
-| `resumeBuilderData` | Full resume object (JSON) |
-| `resumeBuilderTemplate` | Selected template id (`classic` / `modern` / `minimal`) |
-| `resumeBuilderTheme` | Selected color theme id (`teal` / `navy` / `burgundy` / `forest` / `charcoal`) |
-| `rb_final_submission` | Proof page artifact links (Lovable / GitHub / Deployed URL) |
-
----
-
-## Resume Data Shape
-
-```js
-{
-  personal: {
-    name: string,
-    email: string,
-    phone: string,
-    location: string,
-  },
-  summary: string,
-  experience: [
-    { id, company, role, duration, description }
-  ],
-  education: [
-    { id, institution, degree, year, grade }
-  ],
-  projects: [
-    { id, name, description, techStack: string[], liveUrl, githubUrl }
-  ],
-  skills: {
-    technical: string[],
-    soft: string[],
-    tools: string[],
-  },
-  links: {
-    github: string,
-    linkedin: string,
-  }
-}
-```
-
----
-
-## Shipped Status Rules
-
-The `/proof` page shows **"Project 3 Shipped Successfully."** only when ALL three conditions are true simultaneously:
-
-1. All 8 build steps auto-detected as complete
-2. All 10 feature checklist tests passed
-3. All 3 artifact links (Lovable + GitHub + Deployed) are valid URLs
+| `resumeBuilderData` | Full resume JSON |
+| `resumeBuilderTemplate` | `classic` / `modern` / `minimal` |
+| `resumeBuilderTheme` | `teal` / `navy` / `burgundy` / `forest` / `charcoal` |
+| `appThemeMode` | `dark` / `light` |
+| `rb_final_submission` | Proof artifact links |
 
 ---
 
 ## Design System
 
-- **Fonts** — Playfair Display (headings) + DM Sans (body) + DM Mono (code/labels)
-- **Base color** — `#F7F6F3` off-white background
-- **Accent** — driven by selected theme via `--rv-accent` CSS variable
-- **Spacing** — 8px base scale (`--s1` through `--s5`)
-- **Breakpoints** — mobile layout activates at ≤ 900px
+### Color Palette
+
+**Brand constants (both themes):**
+```
+Coral CTA:       #F58F7C
+Coral hover:     #F07060
+Soft pink:       #F2C4CE
+Primary dark:    #2C2B30
+Secondary dark:  #4F4F51
+```
+
+**Dark theme:**
+```
+Background:      #2C2B30
+Alt background:  #242328
+Surface / card:  #4F4F51
+Primary text:    #D6D6D6
+Secondary text:  #B8B8B8
+Muted text:      #888890
+Border:          rgba(214,214,214,0.18)
+```
+
+**Light theme:**
+```
+Background:      #F7F6F3
+Alt background:  #F0EEE9
+Surface / card:  #FFFFFF
+Primary text:    #1E1E1E
+Secondary text:  #6B6B6B
+Muted text:      #9E9E9E
+Border:          #E5E4E2
+```
+
+### Typography
+- Headings — Playfair Display (serif)
+- Body / UI — DM Sans (sans-serif)
+- Labels / mono — DM Mono (monospace)
+
+### Spacing
+`8px · 16px · 24px · 40px · 64px`
+
+### Breakpoints
+- `≤ 900px` — builder stacks vertically
+- `≤ 640px` — mobile padding + hidden toggle label
+
+---
+
+## Theme Toggle Design
+
+52×28px pill in the navbar:
+- **Dark** — charcoal pill, coral glow ring, circle slides right with coral fill and moon icon
+- **Light** — warm beige pill, grey border, circle slides left with white fill and sun icon
+- Spring animation: `cubic-bezier(0.34, 1.56, 0.64, 1)`
+- Hover: coral glow ring pulses on the pill
+
+---
+
+## Shipped Gate
+
+The proof page shows **"Project 3 Shipped Successfully."** only when all three are true at once:
+
+1. All 8 build steps complete (auto-detected)
+2. All 10 checklist tests passed
+3. All 3 artifact URLs valid (Lovable + GitHub + Deployed)
+
+Otherwise the badge reads **"In Progress"**.
 
 ---
 
