@@ -12,8 +12,8 @@ export default function TopNav({ route, nav }) {
       <div className="topnav-inner">
         {/* Logo */}
         <button className="topnav-logo" onClick={() => nav("/")}>
-          <span className="logo-mark">AR</span>
-          <span className="logo-name">AI Resume</span>
+          <span className="logo-mark">RB</span>
+          <span className="logo-name">Resume Builder</span>
         </button>
 
         {/* Nav links */}
